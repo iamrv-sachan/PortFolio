@@ -16,7 +16,7 @@ class ApplicationTest {
             configureSerialization(fakeRepo)
         }
 
-        val response = client.get("/tasks")
+        val response = client.get("/portfolio")
 
         assertEquals(HttpStatusCode.OK, response.status)
         assertTrue(response.bodyAsText().isNotBlank())
