@@ -9,12 +9,16 @@ import kotlin.test.*
 class ApplicationTest {
 
     @Test
-    fun testRoot() = testApplication {
+    fun testGetPortfolio() = testApplication {
+        val fakeRepo = FakeTaskRepository()
+
         application {
-            module()
+            configureSerialization(fakeRepo)
         }
-        val response = client.get("/")
+
+        val response = client.get("/tasks")
+
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals("Ktor: ${Greeting().greet()}", response.bodyAsText())
+        assertTrue(response.bodyAsText().isNotBlank())
     }
 }
