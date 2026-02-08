@@ -48,7 +48,12 @@ fun Application.configureSerialization(repository: TaskRepository) {
         )
     }
     routing {
-        route("/tasks") {
+        route("/") {
+            get {
+                call.respond("Server in Running...")
+            }
+        }
+        route("/portfolio") {
             get {
                 val tasks = repository.allTasks()
                 call.respond(tasks.toResponse())
