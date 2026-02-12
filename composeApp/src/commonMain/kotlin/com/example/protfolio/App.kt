@@ -1,5 +1,6 @@
 package com.example.protfolio
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -51,6 +52,7 @@ import coil3.request.crossfade
 import com.example.protfolio.model.FeaturedWorkResponse
 import com.example.protfolio.model.PortfolioResponse
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
 import protfolio.composeapp.generated.resources.Res
 import protfolio.composeapp.generated.resources.letter_r
 
@@ -174,13 +176,11 @@ fun HeaderSection(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Left: Profile Branding
         Row(verticalAlignment = Alignment.CenterVertically) {
-            AsyncImage(
-                model = Res.drawable.letter_r,
+            Image(
+                painter = painterResource(Res.drawable.letter_r),
                 contentDescription = null,
-                modifier = Modifier.size(36.dp).clip(CircleShape).background(NainiCard),
-                contentScale = ContentScale.Crop
+                modifier = Modifier.size(36.dp).clip(CircleShape)
             )
             Spacer(modifier = Modifier.width(16.dp))
             Text(
