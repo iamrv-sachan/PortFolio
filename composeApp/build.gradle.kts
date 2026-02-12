@@ -49,6 +49,8 @@ kotlin {
             implementation(libs.kotlinx.datetime)
 
             implementation(libs.bundles.ktor)
+
+            implementation(libs.coil.compose)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -56,6 +58,9 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+        }
+        webMain.dependencies {
+            implementation(libs.ktor.client.js)
         }
     }
 }

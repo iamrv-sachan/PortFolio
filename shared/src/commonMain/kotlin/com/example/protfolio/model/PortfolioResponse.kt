@@ -32,8 +32,6 @@ data class ContactResponse(
     val phone: String
 )
 
-/* ---------- Featured Work ---------- */
-
 @Serializable
 data class FeaturedWorkResponse(
     val projectName: String,

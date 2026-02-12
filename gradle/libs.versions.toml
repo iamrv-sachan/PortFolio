@@ -20,6 +20,7 @@ material3 = "1.10.0-alpha05"
 mongodb = "5.2.1"
 kotlinx-datetime = "0.6.0"
 mongodb-bson = "4.11.1"
+coil = "3.0.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -67,6 +68,7 @@ ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", 
 
 # mongo bson
 mongodb-bson = { module = "org.mongodb:bson", version.ref = "mongodb-bson" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 
 
 [plugins]
