@@ -43,10 +43,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.ImageLoader
 import coil3.compose.AsyncImage
+import coil3.compose.setSingletonImageLoaderFactory
+import coil3.network.ktor3.KtorNetworkFetcherFactory
+import coil3.request.crossfade
 import com.example.protfolio.model.FeaturedWorkResponse
 import com.example.protfolio.model.PortfolioResponse
 import kotlinx.coroutines.launch
+import protfolio.composeapp.generated.resources.Res
+import protfolio.composeapp.generated.resources.letter_r
 
 // --- Premium Figma Dark Palette ---
 val NainiBlack = Color(0xFF0A0A0A)
@@ -64,6 +70,15 @@ const val PROJECT_PLACEHOLDER = "https://images.unsplash.com/photo-1633356122544
 fun App() {
     val apiService = PortfolioHttpService()
     val uiState = apiService.uiState.collectAsStateWithLifecycle()
+
+    setSingletonImageLoaderFactory { context ->
+        ImageLoader.Builder(context)
+            .components {
+                add(KtorNetworkFetcherFactory())
+            }
+            .crossfade(true)
+            .build()
+    }
 
     MaterialTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = NainiBlack) {
@@ -162,7 +177,7 @@ fun HeaderSection(
         // Left: Profile Branding
         Row(verticalAlignment = Alignment.CenterVertically) {
             AsyncImage(
-                model = data.profile.profileImage,
+                model = Res.drawable.letter_r,
                 contentDescription = null,
                 modifier = Modifier.size(36.dp).clip(CircleShape).background(NainiCard),
                 contentScale = ContentScale.Crop

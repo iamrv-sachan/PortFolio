@@ -69,6 +69,7 @@ ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", 
 # mongo bson
 mongodb-bson = { module = "org.mongodb:bson", version.ref = "mongodb-bson" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 
 
 [plugins]
