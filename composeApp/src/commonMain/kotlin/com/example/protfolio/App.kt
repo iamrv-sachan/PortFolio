@@ -25,7 +25,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -38,11 +37,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -53,8 +51,6 @@ import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.request.crossfade
 import com.example.protfolio.model.FeaturedWorkResponse
 import com.example.protfolio.model.PortfolioResponse
-import com.example.protfolio.models.PortfolioConfig
-import com.example.protfolio.models.rememberPortfolioConfig
 import com.example.protfolio.styles.AccentBlue
 import com.example.protfolio.styles.NainiBlack
 import com.example.protfolio.styles.NainiCard
@@ -63,7 +59,6 @@ import com.example.protfolio.styles.NainiWhite
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import protfolio.composeapp.generated.resources.Res
-import protfolio.composeapp.generated.resources.ic_download
 import protfolio.composeapp.generated.resources.letter_r
 
 const val PROJECT_PLACEHOLDER = "https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=2070"
@@ -102,46 +97,54 @@ fun PortfolioScreen(data: PortfolioResponse) {
     val activeIndex by remember { derivedStateOf { listState.firstVisibleItemIndex } }
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize().background(NainiBlack)) {
-        val config = rememberPortfolioConfig(maxWidth)
+        val screenWidth = maxWidth
+        val horizontalPadding = screenWidth * 0.2f
 
         Column(modifier = Modifier.fillMaxSize()) {
+            // --- STICKY HEADER ---
             HeaderSection(
                 data = data,
-                config = config,
+                horizontalPadding = horizontalPadding,
                 activeSectionIndex = activeIndex,
                 onNavClick = { index ->
                     coroutineScope.launch { listState.animateScrollToItem(index) }
                 },
-                onDownloadResume = {}
+                onDownloadResume = {
+//                    window.open(data.profile.resumeUrl, "_blank")
+                }
             )
 
             LazyColumn(
                 state = listState,
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = config.horizontalPadding, vertical = 40.dp)
+                contentPadding = PaddingValues(horizontal = horizontalPadding, vertical = 40.dp)
             ) {
+                // Section 0: HERO
                 item {
-                    HeroSection(data, config)
-                    Spacer(modifier = Modifier.height(config.sectionSpacing))
+                    HeroSection(data)
+                    Spacer(modifier = Modifier.height(120.dp))
                 }
 
+                // Section 1: PROFILE
                 item {
-                    SectionTitle("PROFILE", config)
-                    ProfileDetailSection(data, config)
-                    Spacer(modifier = Modifier.height(config.sectionSpacing))
+                    SectionTitle("PROFILE")
+                    ProfileDetailSection(data)
+                    Spacer(modifier = Modifier.height(120.dp))
                 }
 
-                item { SectionTitle("SELECTED WORKS", config) }
+                // Section 2+: WORKS
+                item { SectionTitle("SELECTED WORKS") }
                 itemsIndexed(data.featuredWork) { index, project ->
-                    StaggeredProjectRow(project = project, isImageLeft = index % 2 == 0, config = config)
-                    Spacer(modifier = Modifier.height(config.sectionSpacing / 1.2f))
+                    StaggeredProjectRow(project = project, isImageLeft = index % 2 == 0)
+                    Spacer(modifier = Modifier.height(100.dp))
                 }
 
+                // EXPERTISE & FOOTER
                 item {
-                    SectionTitle("EXPERTISE", config)
-                    SkillsFlow(data, config)
-                    Spacer(modifier = Modifier.height(config.sectionSpacing))
-                    FooterSection(data, config)
+                    SectionTitle("EXPERTISE")
+                    SkillsFlow(data)
+                    Spacer(modifier = Modifier.height(120.dp))
+                    FooterSection(data)
                 }
             }
         }
@@ -151,7 +154,7 @@ fun PortfolioScreen(data: PortfolioResponse) {
 @Composable
 fun HeaderSection(
     data: PortfolioResponse,
-    config: PortfolioConfig,
+    horizontalPadding: androidx.compose.ui.unit.Dp,
     activeSectionIndex: Int,
     onNavClick: (Int) -> Unit,
     onDownloadResume: () -> Unit
@@ -159,8 +162,8 @@ fun HeaderSection(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(NainiBlack.copy(alpha = 0.95f))
-            .padding(horizontal = config.horizontalPadding, vertical = if (config.isMobile) 16.dp else 24.dp),
+            .background(NainiBlack.copy(alpha = 0.9f))
+            .padding(horizontal = horizontalPadding, vertical = 24.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -168,153 +171,102 @@ fun HeaderSection(
             Image(
                 painter = painterResource(Res.drawable.letter_r),
                 contentDescription = null,
-                modifier = Modifier.size(if (config.isMobile) 28.dp else 36.dp).clip(CircleShape)
+                modifier = Modifier.size(36.dp).clip(CircleShape)
             )
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = data.profile.name.uppercase(),
                 color = NainiWhite,
-                fontSize = config.navFontSize,
-                fontFamily = config.displayFont, // Applied
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Black,
                 letterSpacing = 2.sp
             )
         }
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(if (config.isTablet) 24.dp else 40.dp)
-        ) {
-            if (!config.isMobile) {
-                Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-                    val navItems = listOf("HOME" to 0, "PROFILE" to 1, "WORK" to 2)
-                    navItems.forEach { (label, index) ->
-                        val isActive = if (index == 2) activeSectionIndex >= 2 else activeSectionIndex == index
-                        Text(
-                            text = label,
-                            color = if (isActive) AccentBlue else NainiMuted,
-                            fontSize = config.navFontSize,
-                            fontFamily = config.mainFont, // Applied
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.clickable { onNavClick(index) }
-                        )
-                    }
-                }
-            }
-
-            OutlinedButton(
-                onClick = onDownloadResume,
-                border = androidx.compose.foundation.BorderStroke(1.dp, NainiWhite),
-                shape = RoundedCornerShape(4.dp),
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
-            ) {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_download),
-                    contentDescription = null,
-                    modifier = Modifier.size(16.dp),
-                    tint = NainiWhite
+        // Center: Web Navigation (High-end spaced typography)
+        Row(horizontalArrangement = Arrangement.spacedBy(32.dp)) {
+            val navItems = listOf("HOME" to 0, "PROFILE" to 1, "WORK" to 2)
+            navItems.forEach { (label, index) ->
+                val isActive = if (index == 2) activeSectionIndex >= 2 else activeSectionIndex == index
+                Text(
+                    text = label,
+                    color = if (isActive) AccentBlue else NainiMuted,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.clickable { onNavClick(index) }
                 )
-                if (!config.isMobile) {
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "RESUME",
-                        color = NainiWhite,
-                        fontSize = config.navFontSize,
-                        fontFamily = config.mainFont, // Applied
-                        fontWeight = FontWeight.Bold
-                    )
-                }
             }
+        }
+
+        // Right: Resume CTA
+        OutlinedButton(
+            onClick = onDownloadResume,
+            border = androidx.compose.foundation.BorderStroke(1.dp, NainiWhite),
+            shape = RoundedCornerShape(4.dp)
+        ) {
+            Text("RESUME", color = NainiWhite, fontSize = 11.sp, fontWeight = FontWeight.Bold)
         }
     }
 }
 
 @Composable
-fun HeroSection(data: PortfolioResponse, config: PortfolioConfig) {
+fun ProfileDetailSection(data: PortfolioResponse) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(64.dp)
+    ) {
+        Text(
+            text = data.profile.summary,
+            fontSize = 20.sp,
+            lineHeight = 34.sp,
+            color = NainiWhite,
+            modifier = Modifier.weight(1.2f)
+        )
+        AsyncImage(
+            model = data.profile.profileImage,
+            contentDescription = null,
+            modifier = Modifier.weight(0.8f).aspectRatio(1f).clip(RoundedCornerShape(8.dp)),
+            contentScale = ContentScale.Crop
+        )
+    }
+}
+
+@Composable
+fun HeroSection(data: PortfolioResponse) {
     Column {
         Text(
             text = data.profile.tagline,
-            fontSize = config.heroTitleSize,
-            lineHeight = config.heroTitleSize * 1.1f,
-            fontFamily = config.displayFont, // Applied
+            fontSize = 72.sp,
+            lineHeight = 80.sp,
             fontWeight = FontWeight.ExtraBold,
             color = NainiWhite,
-            letterSpacing = (-2).sp
+            letterSpacing = (-3).sp
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(32.dp))
         Text(
-            text = data.profile.summary.substringBefore(".") + ".",
-            fontSize = config.bodySize,
-            fontFamily = config.mainFont, // Applied
-            lineHeight = config.bodySize * 1.5f,
+            text = data.profile.summary.substringBefore(".") + ".", // Short intro for hero
+            fontSize = 24.sp,
+            lineHeight = 36.sp,
             color = NainiMuted,
-            modifier = Modifier.fillMaxWidth(if (config.isMobile) 1f else 0.7f)
+            modifier = Modifier.fillMaxWidth(0.7f)
         )
     }
 }
 
 @Composable
-fun ProfileDetailSection(data: PortfolioResponse, config: PortfolioConfig) {
-    if (config.isMobile) {
-        Column(verticalArrangement = Arrangement.spacedBy(32.dp)) {
-            AsyncImage(
-                model = data.profile.profileImage,
-                contentDescription = null,
-                modifier = Modifier.fillMaxWidth().aspectRatio(1.2f).clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
-            )
-            Text(
-                text = data.profile.summary,
-                fontSize = config.bodySize,
-                fontFamily = config.mainFont, // Applied
-                lineHeight = config.bodySize * 1.6f,
-                color = NainiWhite
-            )
-        }
-    } else {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(64.dp)
-        ) {
-            Text(
-                text = data.profile.summary,
-                fontSize = config.bodySize,
-                fontFamily = config.mainFont, // Applied
-                lineHeight = config.bodySize * 1.6f,
-                color = NainiWhite,
-                modifier = Modifier.weight(1.2f)
-            )
-            AsyncImage(
-                model = data.profile.profileImage,
-                contentDescription = null,
-                modifier = Modifier.weight(0.8f).aspectRatio(1f).clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
-            )
-        }
-    }
-}
-
-@Composable
-fun StaggeredProjectRow(project: FeaturedWorkResponse, isImageLeft: Boolean, config: PortfolioConfig) {
-    if (config.isMobile) {
-        Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(20.dp)) {
-            ProjectImage(Modifier.fillMaxWidth())
-            ProjectDetails(project, Modifier.fillMaxWidth(), TextAlign.Start, config)
-        }
-    } else {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(if (config.isTablet) 32.dp else 64.dp)
-        ) {
-            if (isImageLeft) {
-                ProjectImage(Modifier.weight(1.2f))
-                ProjectDetails(project, Modifier.weight(1f), TextAlign.Start, config)
-            } else {
-                ProjectDetails(project, Modifier.weight(1f), TextAlign.End, config)
-                ProjectImage(Modifier.weight(1.2f))
-            }
+fun StaggeredProjectRow(project: FeaturedWorkResponse, isImageLeft: Boolean) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(64.dp)
+    ) {
+        if (isImageLeft) {
+            ProjectImage(Modifier.weight(1.2f))
+            ProjectDetails(project, Modifier.weight(1f), TextAlign.Start)
+        } else {
+            ProjectDetails(project, Modifier.weight(1f), TextAlign.End)
+            ProjectImage(Modifier.weight(1.2f))
         }
     }
 }
@@ -324,62 +276,26 @@ fun ProjectImage(modifier: Modifier) {
     AsyncImage(
         model = PROJECT_PLACEHOLDER,
         contentDescription = null,
-        modifier = modifier.aspectRatio(1.5f).clip(RoundedCornerShape(4.dp)).background(NainiCard),
+        modifier = modifier.aspectRatio(1.5f).clip(RoundedCornerShape(2.dp)).background(NainiCard),
         contentScale = ContentScale.Crop
     )
 }
 
 @Composable
-fun ProjectDetails(project: FeaturedWorkResponse, modifier: Modifier, alignment: TextAlign, config: PortfolioConfig) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = if (alignment == TextAlign.Start) Alignment.Start else Alignment.End
-    ) {
-        Text(
-            text = project.sector.uppercase(),
-            color = AccentBlue,
-            fontSize = 12.sp,
-            fontFamily = config.displayFont, // Applied
-            fontWeight = FontWeight.Bold,
-            letterSpacing = 2.sp
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = project.projectName,
-            color = NainiWhite,
-            fontSize = config.projectTitleSize,
-            fontFamily = config.displayFont, // Applied
-            fontWeight = FontWeight.Bold,
-            textAlign = alignment,
-            lineHeight = config.projectTitleSize * 1.1f
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = project.description,
-            color = NainiMuted,
-            fontSize = config.bodySize * 0.9f,
-            fontFamily = config.mainFont, // Applied
-            lineHeight = config.bodySize * 1.4f,
-            textAlign = alignment
-        )
+fun ProjectDetails(project: FeaturedWorkResponse, modifier: Modifier, alignment: TextAlign) {
+    Column(modifier = modifier, horizontalAlignment = if (alignment == TextAlign.Start) Alignment.Start else Alignment.End) {
+        Text(text = project.sector.uppercase(), color = AccentBlue, fontSize = 12.sp, fontWeight = FontWeight.Bold, letterSpacing = 2.sp)
+        Spacer(modifier = Modifier.height(12.dp))
+        Text(text = project.projectName, color = NainiWhite, fontSize = 42.sp, fontWeight = FontWeight.Bold, textAlign = alignment)
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(text = project.description, color = NainiMuted, fontSize = 18.sp, lineHeight = 28.sp, textAlign = alignment)
 
         Spacer(modifier = Modifier.height(24.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
             project.impactMetrics.forEach { metric ->
                 Column(horizontalAlignment = if (alignment == TextAlign.Start) Alignment.Start else Alignment.End) {
-                    Text(
-                        text = metric.value,
-                        color = NainiWhite,
-                        fontFamily = config.displayFont, // Applied
-                        fontWeight = FontWeight.Black,
-                        fontSize = config.bodySize * 1.2f
-                    )
-                    Text(
-                        text = metric.label.uppercase(),
-                        color = NainiMuted,
-                        fontFamily = config.mainFont, // Applied
-                        fontSize = 10.sp
-                    )
+                    Text(metric.value, color = NainiWhite, fontWeight = FontWeight.Black, fontSize = 22.sp)
+                    Text(metric.label.uppercase(), color = NainiMuted, fontSize = 10.sp)
                 }
             }
         }
@@ -387,70 +303,27 @@ fun ProjectDetails(project: FeaturedWorkResponse, modifier: Modifier, alignment:
 }
 
 @Composable
-fun SectionTitle(title: String, config: PortfolioConfig) {
-    Text(
-        text = title,
-        color = NainiMuted,
-        fontSize = config.sectionTitleSize,
-        fontFamily = config.displayFont, // Applied
-        fontWeight = FontWeight.Bold,
-        letterSpacing = 4.sp,
-        modifier = Modifier.padding(bottom = if (config.isMobile) 32.dp else 60.dp)
-    )
+fun SectionTitle(title: String) {
+    Text(text = title, color = NainiMuted, fontSize = 14.sp, fontWeight = FontWeight.Bold, letterSpacing = 4.sp, modifier = Modifier.padding(bottom = 60.dp))
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun SkillsFlow(data: PortfolioResponse, config: PortfolioConfig) {
-    val fontSize = if (config.isMobile) 24.sp else 36.sp
-    FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(if (config.isMobile) 16.dp else 24.dp),
-        verticalArrangement = Arrangement.spacedBy(if (config.isMobile) 16.dp else 24.dp)
-    ) {
+fun SkillsFlow(data: PortfolioResponse) {
+    FlowRow(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(24.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) {
         data.expertise.technical.forEach { tech ->
-            Text(
-                text = tech.skill,
-                color = NainiWhite,
-                fontSize = fontSize,
-                fontFamily = config.mainFont, // Applied
-                fontWeight = FontWeight.Light
-            )
+            Text(text = tech.skill, color = NainiWhite, fontSize = 36.sp, fontWeight = FontWeight.Light)
         }
     }
 }
 
 @Composable
-fun FooterSection(data: PortfolioResponse, config: PortfolioConfig) {
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(vertical = if (config.isMobile) 60.dp else 100.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = data.connect.title.uppercase(),
-            color = AccentBlue,
-            fontSize = 14.sp,
-            fontFamily = config.displayFont, // Applied
-            fontWeight = FontWeight.Bold,
-            letterSpacing = 3.sp
-        )
+fun FooterSection(data: PortfolioResponse) {
+    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 100.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(text = data.connect.title.uppercase(), color = AccentBlue, fontSize = 14.sp, fontWeight = FontWeight.Bold, letterSpacing = 3.sp)
         Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text = "Let's build together.",
-            color = NainiWhite,
-            fontSize = if (config.isMobile) 32.sp else 64.sp,
-            lineHeight = if (config.isMobile) 40.sp else 72.sp,
-            fontFamily = config.displayFont, // Applied
-            fontWeight = FontWeight.ExtraBold,
-            textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(32.dp))
-        Text(
-            text = data.profile.contact.email,
-            color = NainiMuted,
-            fontSize = config.bodySize,
-            fontFamily = config.mainFont, // Applied
-            fontWeight = FontWeight.Medium
-        )
+        Text(text = "Let's build together.", color = NainiWhite, fontSize = 64.sp, fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center)
+        Spacer(modifier = Modifier.height(40.dp))
+        Text(text = data.profile.contact.email, color = NainiMuted, fontSize = 24.sp, fontWeight = FontWeight.Medium)
     }
 }
