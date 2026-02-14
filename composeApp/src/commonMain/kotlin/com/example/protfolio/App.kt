@@ -1,32 +1,18 @@
 package com.example.protfolio
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,32 +22,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.ImageLoader
-import coil3.compose.AsyncImage
 import coil3.compose.setSingletonImageLoaderFactory
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.request.crossfade
-import com.example.protfolio.model.FeaturedWorkResponse
 import com.example.protfolio.model.PortfolioResponse
-import com.example.protfolio.styles.AccentBlue
-import com.example.protfolio.styles.NainiBlack
-import com.example.protfolio.styles.NainiCard
-import com.example.protfolio.styles.NainiMuted
-import com.example.protfolio.styles.NainiWhite
+import com.example.protfolio.theme.AppTheme
+import com.example.protfolio.theme.PortfolioTheme
+import com.example.protfolio.ui.components.FooterSection
+import com.example.protfolio.ui.components.HeaderSection
+import com.example.protfolio.ui.components.HeroSection
+import com.example.protfolio.ui.components.ProfileDetailSection
+import com.example.protfolio.ui.components.SectionTitle
+import com.example.protfolio.ui.components.SkillsFlow
+import com.example.protfolio.ui.components.ProjectsGridSection
+import com.example.protfolio.ui.components.StaggeredProjectRow
+import com.example.protfolio.ui.components.WindowSize
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.painterResource
-import protfolio.composeapp.generated.resources.Res
-import protfolio.composeapp.generated.resources.letter_r
-
-const val PROJECT_PLACEHOLDER = "https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=2070"
 
 @Composable
 fun App() {
@@ -75,13 +54,13 @@ fun App() {
             .build()
     }
 
-    MaterialTheme {
-        Surface(modifier = Modifier.fillMaxSize(), color = NainiBlack) {
+    AppTheme {
+        Surface(modifier = Modifier.fillMaxSize(), color = PortfolioTheme.colors.background) {
             when (val state = uiState.value) {
                 is PortfolioUiState.SuccessData -> PortfolioScreen(state.data)
                 is PortfolioUiState.Loading -> {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(color = NainiWhite)
+                        CircularProgressIndicator(color = PortfolioTheme.colors.text)
                     }
                 }
                 else -> {}
@@ -95,10 +74,38 @@ fun PortfolioScreen(data: PortfolioResponse) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val activeIndex by remember { derivedStateOf { listState.firstVisibleItemIndex } }
+    val themeController = PortfolioTheme.controller
 
-    BoxWithConstraints(modifier = Modifier.fillMaxSize().background(NainiBlack)) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize().background(PortfolioTheme.colors.background)) {
         val screenWidth = maxWidth
-        val horizontalPadding = screenWidth * 0.2f
+        val windowSize = when {
+            screenWidth < 600.dp -> WindowSize.Compact
+            screenWidth < 840.dp -> WindowSize.Medium
+            else -> WindowSize.Expanded
+        }
+        
+        val horizontalPadding = when (windowSize) {
+            WindowSize.Compact -> PortfolioTheme.spacing.medium
+            WindowSize.Medium -> PortfolioTheme.spacing.extraLarge
+            WindowSize.Expanded -> screenWidth * 0.15f
+        }
+
+        // Calculate section indices for navigation
+        // 0: Hero
+        // 1: Selected Works Title
+        val worksIndex = 1
+        // 1 + works count + 1 (divider)
+        val projectsIndex = worksIndex + data.featuredWork.size + 1
+        // projectsIndex + 1 (Title) + 1 (Grid) + 1 (Divider)
+        val expertiseIndex = projectsIndex + 3
+        
+        // Navigation Map
+        val navIndices = mapOf(
+            "HOME" to 0,
+            "WORK" to worksIndex,
+            "PROJECTS" to projectsIndex,
+            "EXPERTISE" to expertiseIndex
+        )
 
         Column(modifier = Modifier.fillMaxSize()) {
             // --- STICKY HEADER ---
@@ -106,224 +113,71 @@ fun PortfolioScreen(data: PortfolioResponse) {
                 data = data,
                 horizontalPadding = horizontalPadding,
                 activeSectionIndex = activeIndex,
+                navIndices = navIndices,
                 onNavClick = { index ->
                     coroutineScope.launch { listState.animateScrollToItem(index) }
                 },
                 onDownloadResume = {
 //                    window.open(data.profile.resumeUrl, "_blank")
-                }
+                },
+                onToggleTheme = { themeController.toggle() },
+                isDarkTheme = themeController.isDark,
+                windowSize = windowSize
             )
 
             LazyColumn(
                 state = listState,
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = horizontalPadding, vertical = 40.dp)
+                contentPadding = PaddingValues(horizontal = horizontalPadding, vertical = PortfolioTheme.spacing.doubleLarge)
             ) {
                 // Section 0: HERO
                 item {
-                    HeroSection(data)
-                    Spacer(modifier = Modifier.height(120.dp))
+                    HeroSection(data, windowSize)
+                    Spacer(modifier = Modifier.height(PortfolioTheme.spacing.sectionLarge))
+                    HorizontalDivider(color = PortfolioTheme.colors.border, thickness = 1.dp)
                 }
 
-                // Section 1: PROFILE
-                item {
-                    SectionTitle("PROFILE")
-                    ProfileDetailSection(data)
-                    Spacer(modifier = Modifier.height(120.dp))
+                // Section 1: SELECTED WORKS (Featured)
+                item { 
+                    SectionTitle("SELECTED WORKS") 
                 }
-
-                // Section 2+: WORKS
-                item { SectionTitle("SELECTED WORKS") }
                 itemsIndexed(data.featuredWork) { index, project ->
-                    StaggeredProjectRow(project = project, isImageLeft = index % 2 == 0)
-                    Spacer(modifier = Modifier.height(100.dp))
+                    StaggeredProjectRow(project = project, isImageLeft = index % 2 == 0, windowSize = windowSize)
+                    Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
+                }
+                item {
+                    HorizontalDivider(color = PortfolioTheme.colors.border, thickness = 1.dp)
+                    Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
                 }
 
-                // EXPERTISE & FOOTER
+                // Section 2: PROJECTS
+                item {
+                    SectionTitle("PROJECTS")
+                    ProjectsGridSection(data.projectsGrid, windowSize)
+                    Spacer(modifier = Modifier.height(PortfolioTheme.spacing.sectionLarge))
+                    HorizontalDivider(color = PortfolioTheme.colors.border, thickness = 1.dp)
+                }
+
+                // Section 3: EXPERTISE
                 item {
                     SectionTitle("EXPERTISE")
-                    SkillsFlow(data)
-                    Spacer(modifier = Modifier.height(120.dp))
-                    FooterSection(data)
+                    SkillsFlow(data, windowSize)
+                    Spacer(modifier = Modifier.height(PortfolioTheme.spacing.sectionLarge))
+                    HorizontalDivider(color = PortfolioTheme.colors.border, thickness = 1.dp)
+                }
+
+                // Section 4: PROFILE
+                item {
+                    SectionTitle("PROFILE")
+                    ProfileDetailSection(data, windowSize)
+                    Spacer(modifier = Modifier.height(PortfolioTheme.spacing.sectionLarge))
+                }
+
+                // Section 5: FOOTER (Lets Build Together)
+                item {
+                    FooterSection(data, windowSize)
                 }
             }
         }
-    }
-}
-
-@Composable
-fun HeaderSection(
-    data: PortfolioResponse,
-    horizontalPadding: androidx.compose.ui.unit.Dp,
-    activeSectionIndex: Int,
-    onNavClick: (Int) -> Unit,
-    onDownloadResume: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(NainiBlack.copy(alpha = 0.9f))
-            .padding(horizontal = horizontalPadding, vertical = 24.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Image(
-                painter = painterResource(Res.drawable.letter_r),
-                contentDescription = null,
-                modifier = Modifier.size(36.dp).clip(CircleShape)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = data.profile.name.uppercase(),
-                color = NainiWhite,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Black,
-                letterSpacing = 2.sp
-            )
-        }
-
-        // Center: Web Navigation (High-end spaced typography)
-        Row(horizontalArrangement = Arrangement.spacedBy(32.dp)) {
-            val navItems = listOf("HOME" to 0, "PROFILE" to 1, "WORK" to 2)
-            navItems.forEach { (label, index) ->
-                val isActive = if (index == 2) activeSectionIndex >= 2 else activeSectionIndex == index
-                Text(
-                    text = label,
-                    color = if (isActive) AccentBlue else NainiMuted,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable { onNavClick(index) }
-                )
-            }
-        }
-
-        // Right: Resume CTA
-        OutlinedButton(
-            onClick = onDownloadResume,
-            border = androidx.compose.foundation.BorderStroke(1.dp, NainiWhite),
-            shape = RoundedCornerShape(4.dp)
-        ) {
-            Text("RESUME", color = NainiWhite, fontSize = 11.sp, fontWeight = FontWeight.Bold)
-        }
-    }
-}
-
-@Composable
-fun ProfileDetailSection(data: PortfolioResponse) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(64.dp)
-    ) {
-        Text(
-            text = data.profile.summary,
-            fontSize = 20.sp,
-            lineHeight = 34.sp,
-            color = NainiWhite,
-            modifier = Modifier.weight(1.2f)
-        )
-        AsyncImage(
-            model = data.profile.profileImage,
-            contentDescription = null,
-            modifier = Modifier.weight(0.8f).aspectRatio(1f).clip(RoundedCornerShape(8.dp)),
-            contentScale = ContentScale.Crop
-        )
-    }
-}
-
-@Composable
-fun HeroSection(data: PortfolioResponse) {
-    Column {
-        Text(
-            text = data.profile.tagline,
-            fontSize = 72.sp,
-            lineHeight = 80.sp,
-            fontWeight = FontWeight.ExtraBold,
-            color = NainiWhite,
-            letterSpacing = (-3).sp
-        )
-        Spacer(modifier = Modifier.height(32.dp))
-        Text(
-            text = data.profile.summary.substringBefore(".") + ".", // Short intro for hero
-            fontSize = 24.sp,
-            lineHeight = 36.sp,
-            color = NainiMuted,
-            modifier = Modifier.fillMaxWidth(0.7f)
-        )
-    }
-}
-
-@Composable
-fun StaggeredProjectRow(project: FeaturedWorkResponse, isImageLeft: Boolean) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(64.dp)
-    ) {
-        if (isImageLeft) {
-            ProjectImage(Modifier.weight(1.2f))
-            ProjectDetails(project, Modifier.weight(1f), TextAlign.Start)
-        } else {
-            ProjectDetails(project, Modifier.weight(1f), TextAlign.End)
-            ProjectImage(Modifier.weight(1.2f))
-        }
-    }
-}
-
-@Composable
-fun ProjectImage(modifier: Modifier) {
-    AsyncImage(
-        model = PROJECT_PLACEHOLDER,
-        contentDescription = null,
-        modifier = modifier.aspectRatio(1.5f).clip(RoundedCornerShape(2.dp)).background(NainiCard),
-        contentScale = ContentScale.Crop
-    )
-}
-
-@Composable
-fun ProjectDetails(project: FeaturedWorkResponse, modifier: Modifier, alignment: TextAlign) {
-    Column(modifier = modifier, horizontalAlignment = if (alignment == TextAlign.Start) Alignment.Start else Alignment.End) {
-        Text(text = project.sector.uppercase(), color = AccentBlue, fontSize = 12.sp, fontWeight = FontWeight.Bold, letterSpacing = 2.sp)
-        Spacer(modifier = Modifier.height(12.dp))
-        Text(text = project.projectName, color = NainiWhite, fontSize = 42.sp, fontWeight = FontWeight.Bold, textAlign = alignment)
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(text = project.description, color = NainiMuted, fontSize = 18.sp, lineHeight = 28.sp, textAlign = alignment)
-
-        Spacer(modifier = Modifier.height(24.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-            project.impactMetrics.forEach { metric ->
-                Column(horizontalAlignment = if (alignment == TextAlign.Start) Alignment.Start else Alignment.End) {
-                    Text(metric.value, color = NainiWhite, fontWeight = FontWeight.Black, fontSize = 22.sp)
-                    Text(metric.label.uppercase(), color = NainiMuted, fontSize = 10.sp)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun SectionTitle(title: String) {
-    Text(text = title, color = NainiMuted, fontSize = 14.sp, fontWeight = FontWeight.Bold, letterSpacing = 4.sp, modifier = Modifier.padding(bottom = 60.dp))
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-fun SkillsFlow(data: PortfolioResponse) {
-    FlowRow(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(24.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) {
-        data.expertise.technical.forEach { tech ->
-            Text(text = tech.skill, color = NainiWhite, fontSize = 36.sp, fontWeight = FontWeight.Light)
-        }
-    }
-}
-
-@Composable
-fun FooterSection(data: PortfolioResponse) {
-    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 100.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = data.connect.title.uppercase(), color = AccentBlue, fontSize = 14.sp, fontWeight = FontWeight.Bold, letterSpacing = 3.sp)
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(text = "Let's build together.", color = NainiWhite, fontSize = 64.sp, fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center)
-        Spacer(modifier = Modifier.height(40.dp))
-        Text(text = data.profile.contact.email, color = NainiMuted, fontSize = 24.sp, fontWeight = FontWeight.Medium)
     }
 }
