@@ -1,12 +1,13 @@
 package com.example.protfolio
 
-import Connect
-import Contact
-import Expertise
-import MetadataTime
-import Philosophy
-import PortfolioData
-import Profile
+import com.example.protfolio.model.ContactItem
+import com.example.protfolio.model.Contacts
+import com.example.protfolio.model.Expertise
+import com.example.protfolio.model.MetadataTime
+import com.example.protfolio.model.PortfolioData
+import com.example.protfolio.model.Profile
+import com.example.protfolio.model.ProfileSummary
+import com.example.protfolio.model.ProjectsGrid
 import com.example.protfolio.mongorepo.TaskRepository
 import java.time.Instant
 import org.bson.types.ObjectId
@@ -22,29 +23,29 @@ class FakeTaskRepository : TaskRepository {
                 profileImage = "https://example.com/profile.png",
                 resumeUrl = "https://example.com/resume.pdf",
                 tagline = "Building cool things",
-                summary = "Test summary",
-                availability = "Available",
-                contact = Contact(
-                    email = "test@example.com",
-                    phone = "1234567890"
-                )
+                highlightKeyword = "cool",
+                summary = ProfileSummary(
+                    primary = "Test summary primary",
+                    secondary = "Test summary secondary"
+                ),
+                availability = "Available"
+            ),
+            contacts = Contacts(
+                email = ContactItem("test@example.com", "email_icon"),
+                phone = ContactItem("1234567890", "phone_icon"),
+                github = ContactItem("github.com/test", "github_icon"),
+                linkedin = ContactItem("linkedin.com/in/test", "linkedin_icon"),
+                medium = ContactItem("medium.com/@test", "medium_icon")
             ),
             featuredWork = emptyList(),
+            projectsGrid = ProjectsGrid(
+                layout = "grid",
+                projects = emptyList()
+            ),
             expertise = Expertise(
-                technical = emptyList(),
-                domain = emptyList()
-            ),
-            playground = emptyList(),
-            philosophy = Philosophy(
-                title = "Test Philosophy",
-                content = "Write clean code"
-            ),
-            connect = Connect(
-                title = "Connect",
-                socials = emptyList()
+                technical = emptyList()
             ),
             metadata = MetadataTime(
-                createdAt = Instant.now(),
                 updatedAt = Instant.now(),
                 version = "1.0"
             )

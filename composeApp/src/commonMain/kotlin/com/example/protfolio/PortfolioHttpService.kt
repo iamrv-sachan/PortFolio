@@ -35,7 +35,7 @@ class PortfolioHttpService {
                 val response = getPortfolioApiResponse()
                 _uiState.value = PortfolioUiState.SuccessData(response)
             } catch (e: Exception) {
-                _uiState.value = PortfolioUiState.Error
+                _uiState.value = PortfolioUiState.Error(e.message)
             }
         }
     }
@@ -61,6 +61,6 @@ class PortfolioHttpService {
 
 sealed interface PortfolioUiState {
     data class SuccessData(val data: PortfolioResponse) : PortfolioUiState
-    object Error : PortfolioUiState
+    data class Error(val error: String? = null) : PortfolioUiState
     object Loading : PortfolioUiState
 }

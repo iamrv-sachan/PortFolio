@@ -1,6 +1,6 @@
 package com.example.protfolio.mongorepo
 
-import PortfolioData
+import com.example.protfolio.model.PortfolioData
 import com.mongodb.ConnectionString
 import com.mongodb.MongoClientSettings
 import com.mongodb.kotlin.client.coroutine.MongoClient
