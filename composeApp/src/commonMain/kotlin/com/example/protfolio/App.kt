@@ -145,7 +145,7 @@ fun PortfolioScreen(data: PortfolioResponse) {
                 }
 
                 item {
-                    SectionTitle("SELECTED WORKS")
+                    SectionTitle("CAREER JOURNEY")
                 }
                 itemsIndexed(data.featuredWork) { index, project ->
                     StaggeredProjectRow(project = project, isImageLeft = index % 2 == 0, windowSize = windowSize)

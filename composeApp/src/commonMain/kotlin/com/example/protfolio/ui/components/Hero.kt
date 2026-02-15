@@ -36,6 +36,10 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import com.example.protfolio.model.PortfolioResponse
 import com.example.protfolio.theme.PortfolioTheme
+import com.example.protfolio.ui.components.SocialMedia.EMAIL
+import com.example.protfolio.ui.components.SocialMedia.GITHUB
+import com.example.protfolio.ui.components.SocialMedia.LINKEDIN
+import com.example.protfolio.ui.components.SocialMedia.MEDIUM
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.imageResource
 import org.jetbrains.compose.resources.painterResource
@@ -89,22 +93,30 @@ fun HeroSection(data: PortfolioResponse, windowSize: WindowSize) {
         // Social Icons - Bigger font
         Row(horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(PortfolioTheme.spacing.large)) {
             val contacts = data.contacts
-            HeroContactIcon(url = contacts.linkedin.value, icon = Res.drawable.linkedin_icon)
-            HeroContactIcon(url = contacts.github.value, icon = Res.drawable.github_logo)
-            HeroContactIcon(url = contacts.email.value, icon = Res.drawable.email)
-            HeroContactIcon(url = contacts.medium.value, icon = Res.drawable.medium_icon)
+            HeroContactIcon(media = LINKEDIN, url = contacts.linkedin.value, icon = Res.drawable.linkedin_icon)
+            HeroContactIcon(media = GITHUB, url = contacts.github.value, icon = Res.drawable.github_logo)
+            HeroContactIcon(media = EMAIL, url = contacts.email.value, icon = Res.drawable.email)
+            HeroContactIcon(media = MEDIUM, url = contacts.medium.value, icon = Res.drawable.medium_icon)
         }
     }
 }
 
 @Composable
-fun HeroContactIcon(url: String, icon: DrawableResource) {
+fun HeroContactIcon(media: SocialMedia, url: String, icon: DrawableResource) {
     val uriHandler = LocalUriHandler.current
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
     val isPressed by interactionSource.collectIsPressedAsState()
 
-    val tint = if (isHovered || isPressed) PortfolioTheme.colors.text else PortfolioTheme.colors.secondaryText
+    val tint = if (isHovered || isPressed) {
+        when (media) {
+            LINKEDIN -> com.example.protfolio.theme.LinkedInBlue
+            EMAIL -> com.example.protfolio.theme.EmailRed
+            else -> PortfolioTheme.colors.text
+        }
+    } else {
+        PortfolioTheme.colors.secondaryText
+    }
 
     IconButton(
         onClick = {
@@ -171,9 +183,9 @@ fun AvailabilityStatus(status: String, windowSize: WindowSize) {
     )
     
     // Custom Green Colors
-    val dotColor = androidx.compose.ui.graphics.Color(0xFF43A047) // Lighter Green (Shade 600)
-    val lightGreen = androidx.compose.ui.graphics.Color(0xFF4CAF50) // Standard Green
-    val glowColor = androidx.compose.ui.graphics.Color(0xFF81C784) // Even Lighter Green (Shade 300)
+    val dotColor = com.example.protfolio.theme.AvailabilityDotGreen
+    val lightGreen = com.example.protfolio.theme.AvailabilityLightGreen
+    val glowColor = com.example.protfolio.theme.AvailabilityGlowGreen
     val availabilityTextSize  = if (windowSize == WindowSize.Compact) 12.sp else 16.sp
 
     Row(
@@ -222,4 +234,8 @@ fun AvailabilityStatus(status: String, windowSize: WindowSize) {
             fontWeight = FontWeight.Bold
         )
     }
+}
+
+enum class SocialMedia {
+    LINKEDIN, GITHUB, EMAIL, MEDIUM
 }

@@ -93,7 +93,7 @@ fun AppTheme(
     // Enforce Dark Mode
     val themeController = remember { ThemeController(isDark = true) }
     
-    val colors = DarkPalette // Always use DarkPalette
+    val colors = DarkPalette
 
     // Map to MaterialTheme colors for interop with Material components
     val materialColors = if (themeController.isDark) {
