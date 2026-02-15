@@ -1,41 +1,29 @@
 package com.example.protfolio.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.InlineTextContent
+import androidx.compose.foundation.text.appendInlineContent
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
-import com.example.protfolio.model.PortfolioResponse
-import com.example.protfolio.theme.PortfolioTheme
-
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material.icons.filled.Flight
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,12 +32,116 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
-import protfolio.composeapp.generated.resources.Res
-import protfolio.composeapp.generated.resources.profile_image
+import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.PlaceholderVerticalAlign
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
+import com.example.protfolio.model.PortfolioResponse
+import com.example.protfolio.theme.PortfolioTheme
+import org.jetbrains.compose.resources.painterResource
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
+import protfolio.composeapp.generated.resources.Res
+import protfolio.composeapp.generated.resources.profile_image
+
+// Helper to get Twemoji URL from emoji string (KMP compatible surrogate check)
+fun getEmojiUrl(emoji: String): String {
+    val codePoints = mutableListOf<String>()
+    var i = 0
+    while (i < emoji.length) {
+        val char = emoji[i]
+        if (char.isHighSurrogate() && i + 1 < emoji.length) {
+            val low = emoji[i+1]
+            if (low.isLowSurrogate()) {
+                val codePoint = 0x10000 + ((char.code - 0xD800) shl 10) + (low.code - 0xDC00)
+                codePoints.add(codePoint.toString(16).lowercase())
+                i += 2
+                continue
+            }
+        }
+        codePoints.add(char.code.toString(16).lowercase())
+        i++
+    }
+    // Filter out variation selectors (U+FE0F) which Twemoji often omits in filenames unless necessary
+    // Also filter out zero-width joiners (U+200D) if they are not needed for the filename (Twemoji uses '-' joiners)
+    val hex = codePoints.filter { it != "fe0f" }.joinToString("-")
+    return "https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/$hex.png"
+}
+
+@Composable
+fun EmojiText(
+    text: String,
+    style: androidx.compose.ui.text.TextStyle,
+    color: Color = Color.Unspecified,
+    fontSize: TextUnit = TextUnit.Unspecified,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    fontWeight: FontWeight? = null,
+    textAlign: TextAlign? = null,
+    modifier: Modifier = Modifier
+) {
+    val inlineContentId = "emoji"
+
+    // Parse text and identify emojis
+    val annotatedString = buildAnnotatedString {
+        var i = 0
+        while (i < text.length) {
+            val ch = text[i]
+            if (ch.isHighSurrogate() && i + 1 < text.length) {
+                val low = text[i + 1]
+                if (low.isLowSurrogate()) {
+                    val emoji = "$ch$low"
+                    if (ch.code in 0xD83C..0xD83E) {
+                        appendInlineContent(inlineContentId, emoji)
+                    } else {
+                        append(emoji)
+                    }
+                    i += 2
+                    continue
+                }
+            } else if (ch.code in 0x2600..0x27BF || ch.code in 0x2300..0x23FF) {
+                appendInlineContent(inlineContentId, ch.toString())
+            } else {
+                append(ch)
+            }
+            i++
+        }
+    }
+
+    val inlineContent = mapOf(
+        inlineContentId to InlineTextContent(
+            Placeholder(
+                width = fontSize,
+                height = fontSize,
+                placeholderVerticalAlign = PlaceholderVerticalAlign.Center
+            )
+        ) { emoji ->
+            AsyncImage(
+                model = getEmojiUrl(emoji),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+    )
+
+    Text(
+        text = annotatedString,
+        style = style,
+        color = color,
+        fontSize = fontSize,
+        lineHeight = lineHeight,
+        fontWeight = fontWeight,
+        textAlign = textAlign,
+        inlineContent = inlineContent,
+        modifier = modifier
+    )
+}
 
 // Helper to extract emojis from a string (KMP compatible)
 fun String.extractEmojis(): List<String> {
@@ -88,13 +180,12 @@ fun ProfileDetailSection(data: PortfolioResponse, windowSize: WindowSize) {
 
     Column(modifier = Modifier.fillMaxWidth()) {
         // 1. Primary Text - Always on Top, Full Width
-        Text(
+        EmojiText(
             text = data.profile.summary.primary,
             style = if (windowSize == WindowSize.Compact) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.headlineMedium,
             fontSize = if (windowSize == WindowSize.Compact) 18.sp else 32.sp,
             lineHeight = if (windowSize == WindowSize.Compact) 24.sp else 44.sp,
             fontWeight = if (windowSize == WindowSize.Compact) FontWeight.Bold else FontWeight.Black,
-            fontFamily = FontFamily.Default,
             color = PortfolioTheme.colors.accent,
             modifier = Modifier.fillMaxWidth(),
             textAlign = if (windowSize == WindowSize.Compact) TextAlign.Center else TextAlign.Start
@@ -110,12 +201,11 @@ fun ProfileDetailSection(data: PortfolioResponse, windowSize: WindowSize) {
             ) {
                 ProfileImage(emojis)
                 Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
-                Text(
+                EmojiText(
                     text = data.profile.summary.secondary,
                     style = MaterialTheme.typography.bodyLarge,
                     fontSize = 14.sp,
                     lineHeight = 18.sp,
-                    fontFamily = FontFamily.Default,
                     color = PortfolioTheme.colors.secondaryText,
                     textAlign = TextAlign.Center
                 )
@@ -131,20 +221,19 @@ fun ProfileDetailSection(data: PortfolioResponse, windowSize: WindowSize) {
             ) {
                 // Left: Secondary Text + Button
                 Column(modifier = Modifier.weight(1.2f)) {
-                    Text(
+                    EmojiText(
                         text = data.profile.summary.secondary,
                         style = MaterialTheme.typography.bodyLarge,
                         fontSize = 20.sp,
                         lineHeight = 36.sp,
-                        fontFamily = FontFamily.Default,
                         color = PortfolioTheme.colors.secondaryText
                     )
-                    
+
                     Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
 
                     DownloadResumeButton(data.profile.resumeUrl)
                 }
-               
+
                 // Right: Image
                 ProfileImage(emojis)
             }
@@ -199,12 +288,12 @@ fun RowScope.ProfileImage(emojis: List<String>) {
                         },
                     contentAlignment = Alignment.Center
                 ) {
-                    EmojiBubble(emoji)
+                    EmojiBubble(emoji, isMobile = false)
                 }
             }
-
-            AsyncImage(
-                model = Res.drawable.profile_image,
+            
+            Image(
+                painter = painterResource(Res.drawable.profile_image),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth(0.7f)
@@ -245,12 +334,12 @@ fun ColumnScope.ProfileImage(emojis: List<String>) {
                     },
                 contentAlignment = Alignment.Center
             ) {
-                EmojiBubble(emoji)
+                EmojiBubble(emoji, isMobile = true)
             }
         }
 
-        AsyncImage(
-            model = Res.drawable.profile_image,
+        Image(
+            painter = painterResource(Res.drawable.profile_image),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth(0.6f)
@@ -263,18 +352,21 @@ fun ColumnScope.ProfileImage(emojis: List<String>) {
 }
 
 @Composable
-fun EmojiBubble(emoji: String) {
+fun EmojiBubble(emoji: String, isMobile: Boolean) {
+    val bubbleSize = if (isMobile) 28.dp else 40.dp
+    val emojiSize = if (isMobile) 18.dp else 24.dp
+    
     Box(
         modifier = Modifier
-            .size(40.dp)
+            .size(bubbleSize)
             .background(Color.White, CircleShape)
             .border(1.dp, PortfolioTheme.colors.border.copy(alpha = 0.1f), CircleShape),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = emoji,
-            fontSize = 20.sp,
-            fontFamily = FontFamily.Default // Essential for emoji rendering
+        AsyncImage(
+            model = getEmojiUrl(emoji),
+            contentDescription = null,
+            modifier = Modifier.size(emojiSize)
         )
     }
 }

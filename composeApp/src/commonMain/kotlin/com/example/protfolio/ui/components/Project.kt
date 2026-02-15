@@ -4,8 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,28 +24,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import com.example.protfolio.ui.extensions.scrollDrivenReveal
-import com.example.protfolio.ui.extensions.interactiveTilt
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.protfolio.model.FeaturedWorkResponse
+import com.example.protfolio.model.ProjectItemResponse
+import com.example.protfolio.model.ProjectsGridResponse
 import com.example.protfolio.theme.PortfolioTheme
+import com.example.protfolio.ui.extensions.interactiveTilt
+import com.example.protfolio.ui.extensions.scrollDrivenReveal
 import org.jetbrains.compose.resources.painterResource
 import protfolio.composeapp.generated.resources.Dazn_iocn
 import protfolio.composeapp.generated.resources.Res
 import protfolio.composeapp.generated.resources.testbook_icon
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
-import com.example.protfolio.model.ProjectItemResponse
-import com.example.protfolio.model.ProjectsGridResponse
 
 @Composable
 fun StaggeredProjectRow(
@@ -58,7 +53,7 @@ fun StaggeredProjectRow(
     // Card-like container with click behavior
     val containerModifier = Modifier
         .fillMaxWidth()
-        .scrollDrivenReveal(listState, index)
+        .scrollDrivenReveal(listState, index, enabled = windowSize == WindowSize.Expanded)
         .clip(RoundedCornerShape(16.dp))
         .border(2.dp, PortfolioTheme.colors.border, RoundedCornerShape(16.dp))
         .background(PortfolioTheme.colors.surface)
@@ -131,8 +126,11 @@ fun ProjectDetails(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            val logo =
-                if (project.company == "DAZN") Res.drawable.Dazn_iocn else Res.drawable.testbook_icon
+            val logo = when (project.company.uppercase()) {
+                "DAZN" -> Res.drawable.Dazn_iocn
+                "TESTBOOK" -> Res.drawable.testbook_icon
+                else -> Res.drawable.testbook_icon // Default fallback
+            }
             Icon(
                 painter = painterResource(logo),
                 contentDescription = "${project.company} Logo",
@@ -181,9 +179,10 @@ fun ProjectDetails(
 
         Spacer(modifier = Modifier.height(PortfolioTheme.spacing.extraLarge))
 
-        Row(
-            verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.spacedBy(32.dp)
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(32.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             project.focusAreas.take(3).forEach { area ->
                 Column {
@@ -226,7 +225,7 @@ fun ProjectsGridSection(
                 horizontalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 rowProjects.forEach { project ->
-                    ProjectGridItem(project, Modifier.weight(1f))
+                    ProjectGridItem(project, Modifier.weight(1f), windowSize)
                 }
                 // Fill empty space if row is not full
                 repeat(columns - rowProjects.size) {
@@ -238,12 +237,17 @@ fun ProjectsGridSection(
 }
 
 @Composable
-fun ProjectGridItem(project: ProjectItemResponse, modifier: Modifier) {
+fun ProjectGridItem(project: ProjectItemResponse, modifier: Modifier, windowSize: WindowSize) {
     val uriHandler = LocalUriHandler.current
     Column(
         modifier = modifier
         .clip(RoundedCornerShape(12.dp))
-        .interactiveTilt(maxRotationX = 5f, maxRotationY = 5f, targetElevation = 4f)
+        .interactiveTilt(
+            maxRotationX = 5f, 
+            maxRotationY = 5f, 
+            targetElevation = 4f, 
+            enabled = windowSize == WindowSize.Expanded
+        )
         .border(1.dp, PortfolioTheme.colors.border, RoundedCornerShape(12.dp))
         .background(Color.Transparent) // No background color
         .clickable { uriHandler.openUri(project.repo) }

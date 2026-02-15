@@ -30,8 +30,9 @@ import androidx.compose.ui.unit.IntSize
 fun Modifier.scrollDrivenReveal(
     listState: LazyListState,
     index: Int,
-    slideDistance: Dp = 40.dp
-): Modifier = this.graphicsLayer {
+    slideDistance: Dp = 40.dp,
+    enabled: Boolean = true
+): Modifier = if (enabled.not()) this else this.graphicsLayer {
     val layoutInfo = listState.layoutInfo
     val itemInfo = layoutInfo.visibleItemsInfo.find { it.index == index }
     
@@ -79,8 +80,9 @@ fun Modifier.scrollDrivenReveal(
 fun Modifier.interactiveTilt(
     maxRotationX: Float = 10f,
     maxRotationY: Float = 10f,
-    targetElevation: Float = 8f
-): Modifier = this.composed {
+    targetElevation: Float = 8f,
+    enabled: Boolean = true
+): Modifier = if (enabled.not()) this else this.composed {
     var size by remember { mutableStateOf(IntSize.Zero) }
     var pointerOffset by remember { mutableStateOf<Offset?>(null) }
 
