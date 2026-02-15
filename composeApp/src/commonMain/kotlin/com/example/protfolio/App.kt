@@ -4,8 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
@@ -131,48 +131,71 @@ fun PortfolioScreen(data: PortfolioResponse) {
             LazyColumn(
                 state = listState,
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = horizontalPadding, vertical = PortfolioTheme.spacing.doubleLarge)
             ) {
                 // Section 0: HERO
                 item {
-                    HeroSection(data, windowSize)
+                    Box(modifier = Modifier.padding(horizontal = horizontalPadding)) {
+                        HeroSection(data, windowSize)
+                    }
                     Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
                 }
 
                 item {
-                    HorizontalDivider(color = PortfolioTheme.colors.border, thickness = 1.dp)
+                    Box(modifier = Modifier.padding(horizontal = horizontalPadding)) {
+                         HorizontalDivider(color = PortfolioTheme.colors.border, thickness = 1.dp)
+                    }
                     Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
                 }
 
                 item {
-                    SectionTitle("CAREER JOURNEY")
+                    Box(modifier = Modifier.padding(horizontal = horizontalPadding)) {
+                        SectionTitle("CAREER JOURNEY")
+                    }
                 }
                 itemsIndexed(data.featuredWork) { index, project ->
-                    StaggeredProjectRow(project = project, isImageLeft = index % 2 == 0, windowSize = windowSize)
+                    Box(modifier = Modifier.padding(horizontal = horizontalPadding)) {
+                        StaggeredProjectRow(project = project, isImageLeft = index % 2 == 0, windowSize = windowSize)
+                    }
                     Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
                 }
 
 
                 // Section 2: PROJECTS
                 item {
-                    SectionTitle("PROJECTS")
-                    ProjectsGridSection(data.projectsGrid, windowSize)
+                    Box(modifier = Modifier.padding(horizontal = horizontalPadding)) {
+                        Column {
+                            SectionTitle("PROJECTS")
+                            ProjectsGridSection(data.projectsGrid, windowSize)
+                        }
+                    }
                     Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
-                    HorizontalDivider(color = PortfolioTheme.colors.border, thickness = 1.dp)
+                    Box(modifier = Modifier.padding(horizontal = horizontalPadding)) {
+                        HorizontalDivider(color = PortfolioTheme.colors.border, thickness = 1.dp)
+                    }
                 }
 
                 // Section 3: EXPERTISE
                 item {
-                    SectionTitle("EXPERTISE")
-                    SkillsFlow(data, windowSize)
+                    Box(modifier = Modifier.padding(horizontal = horizontalPadding)) {
+                        Column {
+                            SectionTitle("EXPERTISE")
+                            SkillsFlow(data, windowSize)
+                        }
+                    }
                     Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
-                    HorizontalDivider(color = PortfolioTheme.colors.border, thickness = 1.dp)
+                    Box(modifier = Modifier.padding(horizontal = horizontalPadding)) {
+                        HorizontalDivider(color = PortfolioTheme.colors.border, thickness = 1.dp)
+                    }
                 }
 
                 // Section 4: PROFILE
                 item {
-                    SectionTitle("PROFILE")
-                    ProfileDetailSection(data, windowSize)
+                    Box(modifier = Modifier.padding(horizontal = horizontalPadding)) {
+                        Column {
+                            SectionTitle("PROFILE")
+                            ProfileDetailSection(data, windowSize)
+                        }
+                    }
                     Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
                 }
 
