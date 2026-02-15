@@ -90,9 +90,10 @@ val LocalThemeController = compositionLocalOf<ThemeController> { error("No Theme
 fun AppTheme(
     content: @Composable () -> Unit
 ) {
+    // Enforce Dark Mode
     val themeController = remember { ThemeController(isDark = true) }
     
-    val colors = if (themeController.isDark) DarkPalette else LightPalette
+    val colors = DarkPalette // Always use DarkPalette
 
     // Map to MaterialTheme colors for interop with Material components
     val materialColors = if (themeController.isDark) {

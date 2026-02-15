@@ -80,22 +80,20 @@ fun HeaderSection(
         // Right: Nav + Resume + Theme
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(PortfolioTheme.spacing.medium)
+            horizontalArrangement = Arrangement.spacedBy(PortfolioTheme.spacing.small)
         ) {
             // 1. Navigation Items
             if (windowSize != WindowSize.Compact) {
-                val navItems = listOf("HOME", "WORK", "PROJECTS", "EXPERTISE")
+                val navItems = listOf("HOME", "WORK", "PROJECTS", "PROFILE")
                 navItems.forEach { label ->
                     val targetIndex = navIndices[label] ?: 0
-                    // Active state logic: simple approximation
-                    // If activeSectionIndex is >= targetIndex and < nextTargetIndex
                     
-                    // Simplified active state for now: match strict index or range
+                    // Active state logic
                     val isActive = when (label) {
                         "HOME" -> activeSectionIndex == 0
                         "WORK" -> activeSectionIndex >= targetIndex && activeSectionIndex < (navIndices["PROJECTS"] ?: Int.MAX_VALUE)
-                        "PROJECTS" -> activeSectionIndex >= targetIndex && activeSectionIndex < (navIndices["EXPERTISE"] ?: Int.MAX_VALUE)
-                        "EXPERTISE" -> activeSectionIndex >= targetIndex
+                        "PROJECTS" -> activeSectionIndex >= targetIndex && activeSectionIndex < (navIndices["PROFILE"] ?: Int.MAX_VALUE)
+                        "PROFILE" -> activeSectionIndex >= targetIndex
                         else -> false
                     }
                     
@@ -113,7 +111,7 @@ fun HeaderSection(
                             .padding(horizontal = PortfolioTheme.spacing.medium, vertical = PortfolioTheme.spacing.small)
                     )
                 }
-                Spacer(modifier = Modifier.width(PortfolioTheme.spacing.medium))
+                Spacer(modifier = Modifier.width(PortfolioTheme.spacing.small))
             }
 
             // 2. Resume Button
@@ -123,7 +121,7 @@ fun HeaderSection(
                     .background(PortfolioTheme.colors.surface)
                     .border(1.dp, PortfolioTheme.colors.border, RoundedCornerShape(8.dp))
                     .clickable(onClick = onDownloadResume)
-                    .padding(horizontal = PortfolioTheme.spacing.medium, vertical = PortfolioTheme.spacing.small)
+                    .padding(all = PortfolioTheme.spacing.small)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
@@ -142,14 +140,14 @@ fun HeaderSection(
                 }
             }
 
-            // 3. Theme Toggle
-            IconButton(onClick = onToggleTheme) {
-                Icon(
-                    imageVector = if (isDarkTheme) Icons.Default.BrightnessHigh else Icons.Default.BrightnessLow,
-                    contentDescription = "Toggle Theme",
-                    tint = PortfolioTheme.colors.text
-                )
-            }
+            // 3. Theme Toggle - Removed as per requirements
+//            IconButton(onClick = onToggleTheme) {
+//                Icon(
+//                    imageVector = if (isDarkTheme) Icons.Default.BrightnessHigh else Icons.Default.BrightnessLow,
+//                    contentDescription = "Toggle Theme",
+//                    tint = PortfolioTheme.colors.text
+//                )
+//            }
         }
     }
 }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,20 +34,36 @@ import com.example.protfolio.ui.components.WindowSize
 fun FooterSection(data: PortfolioResponse, windowSize: WindowSize) {
     val titleSize = if (windowSize == WindowSize.Compact) 32.sp else 64.sp
 
-    Column(modifier = Modifier.fillMaxWidth().padding(vertical = PortfolioTheme.spacing.sectionLarge), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = "CONNECT", style = MaterialTheme.typography.labelMedium, color = PortfolioTheme.colors.accent, fontSize = 14.sp, fontWeight = FontWeight.Bold, letterSpacing = 3.sp)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(PortfolioTheme.colors.surface) // Darker background
+            .padding(vertical = PortfolioTheme.spacing.sectionLarge), 
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "THANKS FOR STOPPING BY!", style = MaterialTheme.typography.labelMedium, color = PortfolioTheme.colors.accent, fontSize = 14.sp, fontWeight = FontWeight.Bold, letterSpacing = 3.sp)
         Spacer(modifier = Modifier.height(PortfolioTheme.spacing.large))
-        Text(text = "Let's build together.", style = MaterialTheme.typography.displayMedium, color = PortfolioTheme.colors.text, fontSize = titleSize, fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center)
+        Text(text = "Let's connect to build better things.", style = MaterialTheme.typography.displayMedium, color = PortfolioTheme.colors.text, fontSize = titleSize, fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center)
         Spacer(modifier = Modifier.height(PortfolioTheme.spacing.doubleLarge))
         
         // Contacts Row
         Row(horizontalArrangement = Arrangement.spacedBy(PortfolioTheme.spacing.large)) {
             val contacts = data.contacts
             ContactIcon(contacts.email.value, Icons.Default.Email)
-            ContactIcon(contacts.github.value, Icons.Default.Code) // Placeholder for Github
-            ContactIcon(contacts.linkedin.value, Icons.Default.Work) // Placeholder for LinkedIn
-            ContactIcon(contacts.medium.value, Icons.Default.Article) // Placeholder for Medium
+            
+            // Using placeholder icons/logic for social matching until exact icons are available
+            ContactIcon(contacts.github.value, Icons.Default.Code)
+            ContactIcon(contacts.linkedin.value, Icons.Default.Work)
+            ContactIcon(contacts.medium.value, Icons.Default.Article)
         }
+        
+        Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
+        
+        Text(
+            text = "© 2026 Rajeev Sachan",
+            style = MaterialTheme.typography.bodySmall,
+            color = PortfolioTheme.colors.secondaryText
+        )
     }
 }
 

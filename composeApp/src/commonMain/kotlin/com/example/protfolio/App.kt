@@ -87,7 +87,7 @@ fun PortfolioScreen(data: PortfolioResponse) {
         val horizontalPadding = when (windowSize) {
             WindowSize.Compact -> PortfolioTheme.spacing.medium
             WindowSize.Medium -> PortfolioTheme.spacing.extraLarge
-            WindowSize.Expanded -> screenWidth * 0.15f
+            WindowSize.Expanded -> screenWidth * 0.12f
         }
 
         // Calculate section indices for navigation
@@ -97,14 +97,14 @@ fun PortfolioScreen(data: PortfolioResponse) {
         // 1 + works count + 1 (divider)
         val projectsIndex = worksIndex + data.featuredWork.size + 1
         // projectsIndex + 1 (Title) + 1 (Grid) + 1 (Divider)
-        val expertiseIndex = projectsIndex + 3
+        val profileIndex = projectsIndex + 3
         
         // Navigation Map
         val navIndices = mapOf(
             "HOME" to 0,
             "WORK" to worksIndex,
             "PROJECTS" to projectsIndex,
-            "EXPERTISE" to expertiseIndex
+            "PROFILE" to profileIndex
         )
 
         Column(modifier = Modifier.fillMaxSize()) {

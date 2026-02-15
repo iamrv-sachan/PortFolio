@@ -14,6 +14,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Article
+import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Work
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -29,8 +36,9 @@ import com.example.protfolio.theme.PortfolioTheme
 
 @Composable
 fun HeroSection(data: PortfolioResponse, windowSize: WindowSize) {
-    val taglineSize = if (windowSize == WindowSize.Compact) 48.sp else 72.sp
-    val taglineLineHeight = if (windowSize == WindowSize.Compact) 56.sp else 80.sp
+    // Reduce font size a bit as requested
+    val taglineSize = if (windowSize == WindowSize.Compact) 40.sp else 64.sp
+    val taglineLineHeight = if (windowSize == WindowSize.Compact) 48.sp else 72.sp
     val summarySize = if (windowSize == WindowSize.Compact) 18.sp else 24.sp
     val summaryLineHeight = if (windowSize == WindowSize.Compact) 28.sp else 36.sp
     val summaryWidth = if (windowSize == WindowSize.Compact) 1f else 0.7f
@@ -66,17 +74,29 @@ fun HeroSection(data: PortfolioResponse, windowSize: WindowSize) {
             lineHeight = taglineLineHeight,
             fontWeight = FontWeight.Black,
             color = PortfolioTheme.colors.text,
-            letterSpacing = (-3).sp
+            letterSpacing = (-2).sp
         )
-        Spacer(modifier = Modifier.height(PortfolioTheme.spacing.extraLarge))
-        Spacer(modifier = Modifier.height(PortfolioTheme.spacing.extraLarge))
-        Text(
-            text = data.profile.summary.primary,
-            style = MaterialTheme.typography.bodyLarge,
-            fontSize = summarySize,
-            lineHeight = summaryLineHeight,
-            color = PortfolioTheme.colors.secondaryText,
-            modifier = Modifier.fillMaxWidth(summaryWidth)
+        Spacer(modifier = Modifier.height(PortfolioTheme.spacing.large))
+        
+        // Social Icons - Bigger font
+        Row(horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(PortfolioTheme.spacing.large)) {
+            val contacts = data.contacts
+            HeroContactIcon(contacts.email.value, Icons.Default.Email)
+            HeroContactIcon(contacts.github.value, Icons.Default.Code)
+            HeroContactIcon(contacts.linkedin.value, Icons.Default.Work)
+            HeroContactIcon(contacts.medium.value, Icons.Default.Article)
+        }
+    }
+}
+
+@Composable
+fun HeroContactIcon(url: String, icon: androidx.compose.ui.graphics.vector.ImageVector) {
+    IconButton(onClick = { /* window.open(url) */ }) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = PortfolioTheme.colors.text,
+            modifier = Modifier.size(32.dp) // Bigger than footer (24.dp)
         )
     }
 }
