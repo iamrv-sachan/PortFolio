@@ -1,87 +1,87 @@
-This is a Kotlin Multiplatform project targeting Android, Web, Desktop (JVM), Server.
+# ProtFolio – Modern Developer Showcase
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://iamrv-sachan.github.io/PortFolio/)
+[![KMP](https://img.shields.io/badge/Powered%20by-Kotlin%20Multiplatform-blue)](https://kotlinlang.org/docs/multiplatform.html)
 
-* [/server](./server/src/main/kotlin) is for the Ktor server application.
-
-* [/shared](./shared/src) is for the code that will be shared between all targets in the project.
-  The most important subfolder is [commonMain](./shared/src/commonMain/kotlin). If preferred, you
-  can add code to the platform-specific folders here too.
-
-### Build and Run Android Application
-
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
-
-### Build and Run Desktop (JVM) Application
-
-To build and run the development version of the desktop app, use the run configuration from the run widget
-in your IDE’s toolbar or run it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:run
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:run
-  ```
-
-### Build and Run Server
-
-To build and run the development version of the server, use the run configuration from the run widget
-in your IDE’s toolbar or run it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :server:run
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :server:run
-  ```
-
-### Build and Run Web Application
-
-To build and run the development version of the web app, use the run configuration from the run widget
-in your IDE's toolbar or run it directly from the terminal:
-- for the Wasm target (faster, modern browsers):
-  - on macOS/Linux
-    ```shell
-    ./gradlew :composeApp:wasmJsBrowserDevelopmentRun
-    ```
-  - on Windows
-    ```shell
-    .\gradlew.bat :composeApp:wasmJsBrowserDevelopmentRun
-    ```
-- for the JS target (slower, supports older browsers):
-  - on macOS/Linux
-    ```shell
-    ./gradlew :composeApp:jsBrowserDevelopmentRun
-    ```
-  - on Windows
-    ```shell
-    .\gradlew.bat :composeApp:jsBrowserDevelopmentRun
-    ```
+**ProtFolio** is a high-performance, responsive portfolio application built using **Kotlin Multiplatform (KMP)** and **Compose Multiplatform**. It showcases a seamless experience across Android, Web (WASM/JS), and Desktop, powered by a robust Ktor backend and MongoDB.
 
 ---
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html),
-[Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform/#compose-multiplatform),
-[Kotlin/Wasm](https://kotl.in/wasm/)…
+## 🎨 Visual Preview
 
-We would appreciate your feedback on Compose/Web and Kotlin/Wasm in the public Slack channel [#compose-web](https://slack-chats.kotlinlang.org/c/compose-web).
-If you face any issues, please report them on [YouTrack](https://youtrack.jetbrains.com/newIssue?project=CMP).
+<p align="center">
+  <table>
+    <tr>
+      <td align="center"><b>Web View</b></td>
+      <td align="center"><b>Mobile View</b></td>
+    </tr>
+    <tr>
+      <td><img src="https://via.placeholder.com/600x400?text=Web+Screenshot+Placeholder" width="400"/></td>
+      <td><img src="https://via.placeholder.com/300x600?text=Mobile+Screenshot+Placeholder" width="200"/></td>
+    </tr>
+  </table>
+</p>
+
+> [!NOTE]
+> *Actual screenshots can be added here once generated.*
+
+---
+
+## 🚀 Features
+
+- **Responsive Design**: Fluidly adapts to Compact (Mobile), Medium (Tablet), and Expanded (Desktop) screen sizes.
+- **Micro-Animations**: Scroll-linked reveals, 3D hover tilts, and pulsating availability indicators.
+- **Robust Emoji Support**: Universal emoji rendering using Twemoji CDN, ensuring consistent looks across all browsers.
+- **Dynamic Content**: Data-driven UI powered by a Ktor-based API and MongoDB.
+- **Direct Resume Download**: Integrated Google Drive direct download transformation for easy access to professional documents.
+
+---
+
+## 🛠️ Technical Stack
+
+### Frontend (Compose Multiplatform)
+- **Framework**: [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform) for shared UI.
+- **Image Loading**: [Coil 3](https://github.com/coil-kt/coil) with Ktor network fetcher.
+- **Emoji Rendering**: Twemoji SVG/PNG integration via `InlineTextContent`.
+
+### Backend (Ktor & MongoDB)
+- **Server**: [Ktor](https://ktor.io/) framework for rapid API development.
+- **Database**: [MongoDB](https://www.mongodb.com/) hosted as a scalable data store.
+- **Deployment**: Containerized using **Docker** and hosted on **Railway**.
+
+### DevOps & Hosting
+- **CI/CD**: Fully automated pipeline via **GitHub Actions**. Any merge to `main` branch triggers an automatic build and deploy.
+- **Web Hosting**: Optimized Web (WASM) build hosted on **GitHub Pages**.
+
+---
+
+## 🔗 Project Links
+
+- **Live Website**: [iamrv-sachan.github.io/PortFolio/](https://iamrv-sachan.github.io/PortFolio/)
+- **Backend API**: Hosted on Railway (Accessible via the app).
+
+---
+
+## 📦 Getting Started
+
+### Prerequisites
+- JDK 17+
+- Android Studio (Koala or later)
+- Fleet (Optional, for KMP exploration)
+
+### Installation
+1. Clone the repository: `git clone https://github.com/iamrv-sachan/PortFolio.git`
+2. Open in Android Studio.
+3. Sync Gradle and run the `:composeApp` module for your target platform.
+
+```bash
+# Run Web (WASM)
+./gradlew :composeApp:wasmJsBrowserDevelopmentRun
+
+# Run Android
+./gradlew :composeApp:installDebug
+```
+
+---
+
+© 2026 Rajeev Sachan. Built with ❤️ and Kotlin.

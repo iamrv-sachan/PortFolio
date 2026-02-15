@@ -121,7 +121,7 @@ fun PortfolioScreen(data: PortfolioResponse) {
                     coroutineScope.launch { listState.animateScrollToItem(index) }
                 },
                 onDownloadResume = {
-                    uriHandler.openUri(data.profile.resumeUrl)
+                    uriHandler.openUri("resume.pdf")
                 },
                 onToggleTheme = { themeController.toggle() },
                 isDarkTheme = themeController.isDark,

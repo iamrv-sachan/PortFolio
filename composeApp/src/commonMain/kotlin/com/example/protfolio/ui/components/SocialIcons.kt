@@ -28,6 +28,7 @@ enum class SocialMedia {
 fun SocialContactIcon(
     media: SocialMedia, 
     url: String, 
+    windowSize: WindowSize,
     modifier: Modifier = Modifier.size(36.dp)
 ) {
     val icon = when (media) {
@@ -42,7 +43,9 @@ fun SocialContactIcon(
     val isHovered by interactionSource.collectIsHoveredAsState()
     val isPressed by interactionSource.collectIsPressedAsState()
 
-    val tint = if (isHovered || isPressed) {
+    val tint = if (windowSize != WindowSize.Expanded) {
+        PortfolioTheme.colors.text
+    } else if (isHovered || isPressed) {
         when (media) {
             SocialMedia.LINKEDIN -> com.example.protfolio.theme.LinkedInBlue
             SocialMedia.EMAIL -> com.example.protfolio.theme.EmailRed

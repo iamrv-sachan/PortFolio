@@ -58,7 +58,7 @@ fun getEmojiUrl(emoji: String): String {
     while (i < emoji.length) {
         val char = emoji[i]
         if (char.isHighSurrogate() && i + 1 < emoji.length) {
-            val low = emoji[i+1]
+            val low = emoji[i + 1]
             if (low.isLowSurrogate()) {
                 val codePoint = 0x10000 + ((char.code - 0xD800) shl 10) + (low.code - 0xDC00)
                 codePoints.add(codePoint.toString(16).lowercase())
@@ -246,13 +246,19 @@ fun ProfileDetailSection(data: PortfolioResponse, windowSize: WindowSize) {
 fun DownloadResumeButton(resumeUrl: String) {
     val uriHandler = LocalUriHandler.current
     Button(
-        onClick = { uriHandler.openUri(resumeUrl) },
+        onClick = { uriHandler.openUri("resume.pdf") },
         modifier = Modifier.fillMaxWidth(0.5f).height(56.dp),
         colors = ButtonDefaults.buttonColors(containerColor = PortfolioTheme.colors.surface),
         shape = RoundedCornerShape(8.dp),
         border = androidx.compose.foundation.BorderStroke(1.dp, PortfolioTheme.colors.border)
     ) {
-        Text("DOWNLOAD RESUME", color = PortfolioTheme.colors.text, letterSpacing = 2.sp, fontWeight = FontWeight.Bold)
+        Text(
+            "View Resume",
+            color = PortfolioTheme.colors.text,
+            letterSpacing = 2.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
     }
 }
 
@@ -291,7 +297,7 @@ fun RowScope.ProfileImage(emojis: List<String>) {
                     EmojiBubble(emoji, isMobile = false)
                 }
             }
-            
+
             Image(
                 painter = painterResource(Res.drawable.profile_image),
                 contentDescription = null,
@@ -355,7 +361,7 @@ fun ColumnScope.ProfileImage(emojis: List<String>) {
 fun EmojiBubble(emoji: String, isMobile: Boolean) {
     val bubbleSize = if (isMobile) 28.dp else 40.dp
     val emojiSize = if (isMobile) 18.dp else 24.dp
-    
+
     Box(
         modifier = Modifier
             .size(bubbleSize)

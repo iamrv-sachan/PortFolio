@@ -96,10 +96,10 @@ fun HeroSection(data: PortfolioResponse, windowSize: WindowSize) {
         // Social Icons - Bigger font
         Row(horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(PortfolioTheme.spacing.large)) {
             val contacts = data.contacts
-            SocialContactIcon(media = SocialMedia.LINKEDIN, url = contacts.linkedin.value)
-            SocialContactIcon(media = SocialMedia.GITHUB, url = contacts.github.value)
-            SocialContactIcon(media = SocialMedia.EMAIL, url = contacts.email.value)
-            SocialContactIcon(media = SocialMedia.MEDIUM, url = contacts.medium.value)
+            SocialContactIcon(media = SocialMedia.LINKEDIN, url = contacts.linkedin.value, windowSize = windowSize)
+            SocialContactIcon(media = SocialMedia.GITHUB, url = contacts.github.value, windowSize = windowSize)
+            SocialContactIcon(media = SocialMedia.EMAIL, url = contacts.email.value, windowSize = windowSize)
+            SocialContactIcon(media = SocialMedia.MEDIUM, url = contacts.medium.value, windowSize = windowSize)
         }
     }
 }
