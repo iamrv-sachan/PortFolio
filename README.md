@@ -16,10 +16,8 @@
       <td align="center"><b>Mobile View</b></td>
     </tr>
     <tr>
-      <td><img src="<img width="1168" height="617" alt="image" src="https://github.com/user-attachments/assets/ad9932e1-d158-4d84-89c8-f15b7da492e2" />
-" width="400"/></td>
-      <td><img src="<img width="343" height="671" alt="image" src="https://github.com/user-attachments/assets/019244cf-14b9-414c-a20f-e756eb98ab5b" />
-" width="200"/></td>
+      <td><img src="https://github.com/user-attachments/assets/ad9932e1-d158-4d84-89c8-f15b7da492e2" width="400"/></td>
+      <td><img src="https://github.com/user-attachments/assets/019244cf-14b9-414c-a20f-e756eb98ab5b" width="200"/></td>
     </tr>
   </table>
 </p>
