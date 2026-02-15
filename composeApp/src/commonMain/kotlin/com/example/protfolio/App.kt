@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.ImageLoader
@@ -89,6 +90,8 @@ fun PortfolioScreen(data: PortfolioResponse) {
             WindowSize.Medium -> PortfolioTheme.spacing.extraLarge
             WindowSize.Expanded -> screenWidth * 0.12f
         }
+        
+        val uriHandler = LocalUriHandler.current
 
         // Calculate section indices for navigation
         // 0: Hero
@@ -118,7 +121,7 @@ fun PortfolioScreen(data: PortfolioResponse) {
                     coroutineScope.launch { listState.animateScrollToItem(index) }
                 },
                 onDownloadResume = {
-//                    window.open(data.profile.resumeUrl, "_blank")
+                    uriHandler.openUri(data.profile.resumeUrl)
                 },
                 onToggleTheme = { themeController.toggle() },
                 isDarkTheme = themeController.isDark,
