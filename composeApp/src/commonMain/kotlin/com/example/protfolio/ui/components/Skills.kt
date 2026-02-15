@@ -60,7 +60,7 @@ fun SkillsFlow(data: PortfolioResponse, windowSize: WindowSize) {
             }
         }
 
-        Spacer(modifier = Modifier.height(PortfolioTheme.spacing.sectionLarge))
+        Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
 
         // Exploring Section
         Text(

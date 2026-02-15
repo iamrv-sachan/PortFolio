@@ -38,7 +38,7 @@ fun FooterSection(data: PortfolioResponse, windowSize: WindowSize) {
         modifier = Modifier
             .fillMaxWidth()
             .background(PortfolioTheme.colors.surface) // Darker background
-            .padding(vertical = PortfolioTheme.spacing.sectionLarge), 
+            .padding(vertical = PortfolioTheme.spacing.section),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "THANKS FOR STOPPING BY!", style = MaterialTheme.typography.labelMedium, color = PortfolioTheme.colors.accent, fontSize = 14.sp, fontWeight = FontWeight.Bold, letterSpacing = 3.sp)

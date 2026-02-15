@@ -96,7 +96,7 @@ fun PortfolioScreen(data: PortfolioResponse) {
         // Calculate section indices for navigation
         // 0: Hero
         // 1: Selected Works Title
-        val worksIndex = 1
+        val worksIndex = 2
         // 1 + works count + 1 (divider)
         val projectsIndex = worksIndex + data.featuredWork.size + 1
         // projectsIndex + 1 (Title) + 1 (Grid) + 1 (Divider)
@@ -136,28 +136,28 @@ fun PortfolioScreen(data: PortfolioResponse) {
                 // Section 0: HERO
                 item {
                     HeroSection(data, windowSize)
-                    Spacer(modifier = Modifier.height(PortfolioTheme.spacing.sectionLarge))
-                    HorizontalDivider(color = PortfolioTheme.colors.border, thickness = 1.dp)
+                    Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
                 }
 
-                // Section 1: SELECTED WORKS (Featured)
-                item { 
-                    SectionTitle("SELECTED WORKS") 
+                item {
+                    HorizontalDivider(color = PortfolioTheme.colors.border, thickness = 1.dp)
+                    Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
+                }
+
+                item {
+                    SectionTitle("SELECTED WORKS")
                 }
                 itemsIndexed(data.featuredWork) { index, project ->
                     StaggeredProjectRow(project = project, isImageLeft = index % 2 == 0, windowSize = windowSize)
                     Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
                 }
-                item {
-                    HorizontalDivider(color = PortfolioTheme.colors.border, thickness = 1.dp)
-                    Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
-                }
+
 
                 // Section 2: PROJECTS
                 item {
                     SectionTitle("PROJECTS")
                     ProjectsGridSection(data.projectsGrid, windowSize)
-                    Spacer(modifier = Modifier.height(PortfolioTheme.spacing.sectionLarge))
+                    Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
                     HorizontalDivider(color = PortfolioTheme.colors.border, thickness = 1.dp)
                 }
 
@@ -165,7 +165,7 @@ fun PortfolioScreen(data: PortfolioResponse) {
                 item {
                     SectionTitle("EXPERTISE")
                     SkillsFlow(data, windowSize)
-                    Spacer(modifier = Modifier.height(PortfolioTheme.spacing.sectionLarge))
+                    Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
                     HorizontalDivider(color = PortfolioTheme.colors.border, thickness = 1.dp)
                 }
 
@@ -173,7 +173,7 @@ fun PortfolioScreen(data: PortfolioResponse) {
                 item {
                     SectionTitle("PROFILE")
                     ProfileDetailSection(data, windowSize)
-                    Spacer(modifier = Modifier.height(PortfolioTheme.spacing.sectionLarge))
+                    Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
                 }
 
                 // Section 5: FOOTER (Lets Build Together)

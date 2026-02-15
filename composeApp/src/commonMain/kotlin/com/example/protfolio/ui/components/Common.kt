@@ -17,5 +17,5 @@ enum class WindowSize {
 
 @Composable
 fun SectionTitle(title: String) {
-    Text(text = title, color = PortfolioTheme.colors.secondaryText, fontSize = 14.sp, fontWeight = FontWeight.Bold, letterSpacing = 4.sp, modifier = Modifier.padding(bottom = PortfolioTheme.spacing.section))
+    Text(text = title, color = PortfolioTheme.colors.secondaryText, fontSize = 16.sp, fontWeight = FontWeight.Bold, letterSpacing = 4.sp, modifier = Modifier.padding(bottom = PortfolioTheme.spacing.section))
 }

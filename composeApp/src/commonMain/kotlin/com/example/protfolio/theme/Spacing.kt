@@ -15,7 +15,6 @@ data class Spacing(
     val extraLarge: Dp = 32.dp,
     val doubleLarge: Dp = 48.dp,
     val section: Dp = 64.dp,
-    val sectionLarge: Dp = 120.dp
 )
 
 val LocalSpacing = staticCompositionLocalOf { Spacing() }
