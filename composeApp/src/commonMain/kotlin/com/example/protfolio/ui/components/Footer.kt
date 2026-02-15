@@ -14,13 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Article
-import androidx.compose.material.icons.filled.Code
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Work
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import com.example.protfolio.ui.components.SocialMedia
+import com.example.protfolio.ui.components.SocialContactIcon
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -49,12 +46,10 @@ fun FooterSection(data: PortfolioResponse, windowSize: WindowSize) {
         // Contacts Row
         Row(horizontalArrangement = Arrangement.spacedBy(PortfolioTheme.spacing.large)) {
             val contacts = data.contacts
-            ContactIcon(contacts.email.value, Icons.Default.Email)
-            
-            // Using placeholder icons/logic for social matching until exact icons are available
-            ContactIcon(contacts.github.value, Icons.Default.Code)
-            ContactIcon(contacts.linkedin.value, Icons.Default.Work)
-            ContactIcon(contacts.medium.value, Icons.Default.Article)
+            SocialContactIcon(media = SocialMedia.EMAIL, url = contacts.email.value)
+            SocialContactIcon(media = SocialMedia.GITHUB, url = contacts.github.value)
+            SocialContactIcon(media = SocialMedia.LINKEDIN, url = contacts.linkedin.value)
+            SocialContactIcon(media = SocialMedia.MEDIUM, url = contacts.medium.value)
         }
         
         Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
@@ -67,14 +62,3 @@ fun FooterSection(data: PortfolioResponse, windowSize: WindowSize) {
     }
 }
 
-@Composable
-fun ContactIcon(url: String, icon: androidx.compose.ui.graphics.vector.ImageVector) {
-    androidx.compose.material3.IconButton(onClick = { /* window.open(url) */ }) {
-        androidx.compose.material3.Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = PortfolioTheme.colors.text,
-            modifier = Modifier.size(PortfolioTheme.spacing.large)
-        )
-    }
-}

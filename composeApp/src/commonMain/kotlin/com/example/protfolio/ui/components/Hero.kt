@@ -56,10 +56,7 @@ fun HeroSection(data: PortfolioResponse, windowSize: WindowSize) {
     val taglineLineHeight = if (windowSize == WindowSize.Compact) 40.sp else 70.sp
 
     Column {
-        // Availability Status
-        AvailabilityStatus(data.profile.availability, windowSize)
-        
-        Spacer(modifier = Modifier.height(PortfolioTheme.spacing.large))
+        Spacer(modifier = Modifier.height(PortfolioTheme.spacing.doubleLarge))
 
         val tagline = data.profile.tagline
         val highlight = data.profile.highlightKeyword
@@ -88,50 +85,25 @@ fun HeroSection(data: PortfolioResponse, windowSize: WindowSize) {
             color = PortfolioTheme.colors.text,
             letterSpacing = (-2).sp
         )
+
         Spacer(modifier = Modifier.height(PortfolioTheme.spacing.doubleLarge))
+
+        // Availability Status - Moved below title
+        AvailabilityStatus(data.profile.availability, windowSize)
+
+        Spacer(modifier = Modifier.height(PortfolioTheme.spacing.large))
         
         // Social Icons - Bigger font
         Row(horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(PortfolioTheme.spacing.large)) {
             val contacts = data.contacts
-            HeroContactIcon(media = LINKEDIN, url = contacts.linkedin.value, icon = Res.drawable.linkedin_icon)
-            HeroContactIcon(media = GITHUB, url = contacts.github.value, icon = Res.drawable.github_logo)
-            HeroContactIcon(media = EMAIL, url = contacts.email.value, icon = Res.drawable.email)
-            HeroContactIcon(media = MEDIUM, url = contacts.medium.value, icon = Res.drawable.medium_icon)
+            SocialContactIcon(media = SocialMedia.LINKEDIN, url = contacts.linkedin.value)
+            SocialContactIcon(media = SocialMedia.GITHUB, url = contacts.github.value)
+            SocialContactIcon(media = SocialMedia.EMAIL, url = contacts.email.value)
+            SocialContactIcon(media = SocialMedia.MEDIUM, url = contacts.medium.value)
         }
     }
 }
 
-@Composable
-fun HeroContactIcon(media: SocialMedia, url: String, icon: DrawableResource) {
-    val uriHandler = LocalUriHandler.current
-    val interactionSource = remember { MutableInteractionSource() }
-    val isHovered by interactionSource.collectIsHoveredAsState()
-    val isPressed by interactionSource.collectIsPressedAsState()
-
-    val tint = if (isHovered || isPressed) {
-        when (media) {
-            LINKEDIN -> com.example.protfolio.theme.LinkedInBlue
-            EMAIL -> com.example.protfolio.theme.EmailRed
-            else -> PortfolioTheme.colors.text
-        }
-    } else {
-        PortfolioTheme.colors.secondaryText
-    }
-
-    IconButton(
-        onClick = {
-            uriHandler.openUri(url)
-        },
-        interactionSource = interactionSource
-    ) {
-        Icon(
-            imageResource(icon),
-            contentDescription = null,
-            tint = tint,
-            modifier = Modifier.size(36.dp)
-        )
-    }
-}
 
 @Composable
 fun AvailabilityStatus(status: String, windowSize: WindowSize) {
@@ -236,6 +208,3 @@ fun AvailabilityStatus(status: String, windowSize: WindowSize) {
     }
 }
 
-enum class SocialMedia {
-    LINKEDIN, GITHUB, EMAIL, MEDIUM
-}

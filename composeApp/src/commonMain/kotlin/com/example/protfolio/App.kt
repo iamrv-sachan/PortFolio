@@ -100,14 +100,14 @@ fun PortfolioScreen(data: PortfolioResponse) {
         // 1 + works count + 1 (divider)
         val projectsIndex = worksIndex + data.featuredWork.size + 1
         // projectsIndex + 1 (Title) + 1 (Grid) + 1 (Divider)
-        val profileIndex = projectsIndex + 3
+        val profileIndex = projectsIndex + 2
         
         // Navigation Map
         val navIndices = mapOf(
             "HOME" to 0,
             "WORK" to worksIndex,
             "PROJECTS" to projectsIndex,
-            "PROFILE" to profileIndex
+            "ABOUT" to profileIndex
         )
 
         Column(modifier = Modifier.fillMaxSize()) {
@@ -154,7 +154,13 @@ fun PortfolioScreen(data: PortfolioResponse) {
                 }
                 itemsIndexed(data.featuredWork) { index, project ->
                     Box(modifier = Modifier.padding(horizontal = horizontalPadding)) {
-                        StaggeredProjectRow(project = project, isImageLeft = index % 2 == 0, windowSize = windowSize)
+                        StaggeredProjectRow(
+                            project = project, 
+                            isImageLeft = index % 2 == 0, 
+                            windowSize = windowSize,
+                            listState = listState,
+                            index = index + 3,
+                        )
                     }
                     Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
                 }
@@ -176,6 +182,7 @@ fun PortfolioScreen(data: PortfolioResponse) {
 
                 // Section 3: EXPERTISE
                 item {
+                    Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
                     Box(modifier = Modifier.padding(horizontal = horizontalPadding)) {
                         Column {
                             SectionTitle("EXPERTISE")
@@ -188,11 +195,11 @@ fun PortfolioScreen(data: PortfolioResponse) {
                     }
                 }
 
-                // Section 4: PROFILE
                 item {
+                    Spacer(modifier = Modifier.height(PortfolioTheme.spacing.section))
                     Box(modifier = Modifier.padding(horizontal = horizontalPadding)) {
                         Column {
-                            SectionTitle("PROFILE")
+                            SectionTitle("ABOUT")
                             ProfileDetailSection(data, windowSize)
                         }
                     }

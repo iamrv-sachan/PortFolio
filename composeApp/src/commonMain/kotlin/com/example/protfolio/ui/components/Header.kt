@@ -84,7 +84,7 @@ fun HeaderSection(
         ) {
             // 1. Navigation Items
             if (windowSize != WindowSize.Compact) {
-                val navItems = listOf("HOME", "WORK", "PROJECTS", "PROFILE")
+                val navItems = listOf("HOME", "WORK", "PROJECTS", "ABOUT")
                 navItems.forEach { label ->
                     val targetIndex = navIndices[label] ?: 0
                     
@@ -92,8 +92,8 @@ fun HeaderSection(
                     val isActive = when (label) {
                         "HOME" -> activeSectionIndex == 0
                         "WORK" -> activeSectionIndex >= targetIndex && activeSectionIndex < (navIndices["PROJECTS"] ?: Int.MAX_VALUE)
-                        "PROJECTS" -> activeSectionIndex >= targetIndex && activeSectionIndex < (navIndices["PROFILE"] ?: Int.MAX_VALUE)
-                        "PROFILE" -> activeSectionIndex >= targetIndex
+                        "PROJECTS" -> activeSectionIndex >= targetIndex && activeSectionIndex < (navIndices["ABOUT"] ?: Int.MAX_VALUE)
+                        "ABOUT" -> activeSectionIndex >= targetIndex
                         else -> false
                     }
                     
