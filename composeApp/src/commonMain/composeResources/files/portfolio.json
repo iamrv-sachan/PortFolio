@@ -1,0 +1,272 @@
+{
+  "_id": {
+    "$oid": "65b2f1a2e4b0a1a2b3c4d5e6"
+  },
+  "profile": {
+    "name": "Rajeev Sachan",
+    "title": "Android Developer",
+    "profile_image": "https://drive.google.com/file/d/1hhB76uOCDOPOQ-6AwCzxxyh9DZSZvcHz/view",
+    "resume_url": "https://drive.google.com/uc?export=download&id=10QKQV4pzefCx6RUZBgAOOrEtqyThY59e",
+    "tagline": "Impact-driven Android Developer specializing in Kotlin and Jetpack Compose, building scalable, high-performance apps that turn user and business needs into measurable outcomes.",
+    "highlight_keyword": "Android Developer",
+    "summary": {
+      "primary": "I chose Android development because seeing code transform into a real, usable experience felt magical. What started as curiosity quickly became passion as I realized I could build products people use in their everyday lives. Over time, I grew from fixing small bugs to owning complete features and delivering scalable solutions. Today, I build high-performance Android applications serving 50+ million users on the Play Store. 🚀",
+      "secondary": "Outside of Android, I’m usually exploring new places 🌍 — 16 states and counting — collecting memories (and too many photos).\nIn office breaks, it’s strictly table tennis 🏓, and after office, I switch to badminton 🏸 — because apparently being competitive is a full-time personality trait.\nAt home, I cook Indian food 👨🍳 while vibing to Punjabi music 🎶, occasionally reading something to feel intellectual 📚 — and if I’m doing absolutely nothing… I’m probably overthinking it anyway. 😌"
+    },
+    "availability": "Open to New Opportunities"
+  },
+  "contacts": {
+    "email": {
+      "value": "mailto:rajeevsachan1999@gmail.com",
+      "icon": "email"
+    },
+    "phone": {
+      "value": "+91 8175916942",
+      "icon": "phone"
+    },
+    "github": {
+      "value": "https://github.com/iamrv-sachan",
+      "icon": "github"
+    },
+    "linkedin": {
+      "value": "https://www.linkedin.com/in/rajeev-sachan/",
+      "icon": "linkedin"
+    },
+    "medium": {
+      "value": "https://medium.com/@rajeevsachan1999",
+      "icon": "medium"
+    }
+  },
+  "featured_work": [
+    {
+      "company": "DAZN",
+      "industry": "Global Sports Streaming Platform delivering live and on-demand sports content across multiple countries.",
+      "role": "Software Engineer - Android",
+      "duration": "June 2023 – Present",
+      "image": "https://mma.prnewswire.com/media/2710008/FIFA_Club_World_Cup.jpg?p=publish",
+      "focus_areas": [
+        {
+          "label": "Users",
+          "value": "50M+"
+        },
+        {
+          "label": "Team Size",
+          "value": "25+"
+        },
+        {
+          "label": "Increase User Engagement",
+          "value": "30-40%"
+        }
+      ],
+      "impact_metrics": [
+        {
+          "label": "User Engagement",
+          "value": "30-40% Increase"
+        },
+        {
+          "label": "Performance Boost",
+          "value": "40% Improvement"
+        },
+        {
+          "label": "Connection Drops",
+          "value": "30% Reduction"
+        }
+      ],
+      "key_contributions": [
+        "Refactored the entire Sports Home section from XML to Jetpack Compose, modernizing UI architecture and improving performance while supporting dynamic UI.",
+        "Built a Generic Paywall system for premium rights (FIBA, NFL).",
+        "Optimized Chromecast integration using Cast SDK.",
+        "Implemented Dagger2-based dependency injection.",
+        "Wrote comprehensive Unit/UI tests using Mockito, MockK & Espresso."
+      ]
+    },
+    {
+      "company": "Testbook",
+      "industry": "EdTech platform serving 10M+ users with government exam preparation and learning solutions.",
+      "role": "Software Developer - Android",
+      "duration": "Oct 2021 – May 2023",
+      "image": "https://play-lh.googleusercontent.com/q9qFrZV2YSPpzVgraG3dYROQvau4GdLkURUGLpjRwC9HPbfEHw0Ij5h52SyaSaCslQ=w7680-h4320-rw",
+      "focus_areas": [
+        {
+          "label": "Product Launch",
+          "value": "SkillAcademy"
+        },
+        {
+          "label": "Installations",
+          "value": "50,000+"
+        },
+        {
+          "label": "Increase Revenue",
+          "value": "2x"
+        }
+      ],
+      "impact_metrics": [
+        {
+          "label": "Installations",
+          "value": "25,000+"
+        },
+        {
+          "label": "Revenue Growth",
+          "value": "2x Increase"
+        },
+        {
+          "label": "Crash Reduction",
+          "value": "Significant Drop"
+        }
+      ],
+      "key_contributions": [
+        "Launched SkillAcademy app from scratch, built Assignment module and Account Blocking flow features, and migrated legacy codebase to SDK 33 across modules.",
+        "Built Assignment module & Account blocking flow.",
+        "Migrated legacy codebase to SDK 33 across modules.",
+        "Used Jetpack Compose & Clean Architecture for scalability."
+      ]
+    }
+  ],
+  "projects_grid": {
+    "layout": "3x3",
+    "projects": [
+      {
+        "name": "Clips",
+        "repo": "https://github.com/iamrv-sachan/Clips",
+        "core_tech": [
+          "Exoplayer/Media3",
+          "Compose"
+        ],
+        "description": "Android media-style application showcasing modular UI implementation.",
+        "highlights": [
+          {
+            "label": "Video Player",
+            "value": "Exoplayer/Media3"
+          },
+          {
+            "label": "UI",
+            "value": "Jetpack Compose"
+          }
+        ]
+      },
+      {
+        "name": "MatchMate",
+        "repo": "https://github.com/iamrv-sachan/MatchMate",
+        "core_tech": [
+          "Paging3",
+          "RoomDB"
+        ],
+        "description": "Matrimonial-inspired networking app with swipe cards and offline-first persistence.",
+        "highlights": [
+          {
+            "label": "Architecture",
+            "value": "MVVM"
+          },
+          {
+            "label": "Database",
+            "value": "Room DB"
+          }
+        ]
+      },
+      {
+        "name": "My11",
+        "repo": "https://github.com/iamrv-sachan/My11",
+        "core_tech": [
+          "Firebase",
+          "Firestore",
+          "Cric API"
+        ],
+        "description": "Fantasy cricket app enabling real-time predictions and team selection.",
+        "highlights": [
+          {
+            "label": "Backend",
+            "value": "Firebase"
+          },
+          {
+            "label": "Navigation",
+            "value": "Navigation Graph"
+          }
+        ]
+      },
+      {
+        "name": "Live Notification",
+        "repo": "https://github.com/iamrv-sachan/LiveNotification",
+        "core_tech": [
+          "SDK 36",
+          "Notification APIs"
+        ],
+        "description": "Demonstrates real-time notification handling in Android.",
+        "highlights": [
+          {
+            "label": "Feature",
+            "value": "Foreground Service"
+          }
+        ]
+      },
+      {
+        "name": "Offline Scheduled Notification",
+        "repo": "https://github.com/iamrv-sachan/OfflineScheduledNotification",
+        "core_tech": [
+          "WorkManager",
+          "Firebase Cloud Messaging (FCM)"
+        ],
+        "description": "Implements scheduled offline notifications using WorkManager.",
+        "highlights": [
+          {
+            "label": "Scheduling",
+            "value": "WorkManager"
+          }
+        ]
+      },
+      {
+        "name": "Newsify",
+        "repo": "https://github.com/iamrv-sachan/Newsify",
+        "core_tech": [
+          "Retrofit",
+          "Compose",
+          "Coroutines"
+        ],
+        "description": "News application consuming REST APIs with modern Android stack.",
+        "highlights": [
+          {
+            "label": "Networking",
+            "value": "Retrofit"
+          },
+          {
+            "label": "Async",
+            "value": "Coroutines + Flow"
+          }
+        ]
+      }
+    ]
+  },
+  "expertise": {
+    "technical": [
+      {
+        "skill": "Jetpack Compose",
+        "progress": 85
+      },
+      {
+        "skill": "Coroutines & Flow",
+        "progress": 80
+      },
+      {
+        "skill": "Dagger2 / Hilt",
+        "progress": 75
+      },
+      {
+        "skill": "Kotlin",
+        "progress": 85
+      },
+      {
+        "skill": "MVVM / Clean Architecture",
+        "progress": 95
+      },
+      {
+        "skill": "Unit & UI Testing",
+        "progress": 80
+      }
+    ]
+  },
+  "metadata": {
+    "updatedAt": {
+      "$date": "2026-02-14T00:00:00.000Z"
+    },
+    "version": "2.0"
+  }
+}
